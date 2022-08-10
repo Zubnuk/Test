@@ -5,7 +5,7 @@ from determinant import determinant
 
 class TestDeterminant(unittest.TestCase):
     def test_empty_matrix(self):
-        self.assertEqual(determinant(None), None)
+        self.assertRaises(Exception, determinant, None)
 
     def test_first_order(self):
         matrix = [[1]]
@@ -29,9 +29,16 @@ class TestDeterminant(unittest.TestCase):
                   [-4, 3, 5, -6]]
         self.assertEqual(determinant(matrix), 18)
 
-    def test_not_square(self):
+    def test_not_square_rectangle(self):
         matrix = [[3, -3, -5, 8],
                   [-3, 2, 4, -6],
+                  [-4, 3, 5, -6]]
+        self.assertRaises(Exception, determinant, matrix)
+
+    def test_not_square_jag(self):
+        matrix = [[3, -3, -5, 8],
+                  [-3, 2, 4, -6],
+                  [2, -5, -7],
                   [-4, 3, 5, -6]]
         self.assertRaises(Exception, determinant, matrix)
 
