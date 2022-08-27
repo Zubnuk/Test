@@ -33,6 +33,18 @@ def get_shortest_path_floyd_warshall(dist_matrix: list[list[int]],
     pass
 
 
+def get_min_cost_path(price_table: list[list[int]]) ->\
+        dict[str: int, str: list[tuple[int, int]]]:
+    """Searches for the minimum cost path in the table. Each cell in the table
+    has some price per visit.
+    :param price_table: an integer matrix with cell price values.
+    :raise Exception: when price_table is not an integer matrix.
+    :return: a dictionary with keys: cost - the minimum value of the cost of the
+    path, path - an ordered list of tuples with cell indices.
+    """
+    pass
+
+
 def main():
     matrix = [[0, None, None],
               [1, 0, None],
@@ -43,6 +55,11 @@ def main():
               [None, 0, -2],
               [None, None, 0]]
     print(get_shortest_path_floyd_warshall(matrix, 0, 2))
+
+    table = [[1, 2, 2],
+             [3, 4, 2],
+             [1, 1, 2]]
+    print(get_min_cost_path(table))
 
 
 if __name__ == '__main__':
