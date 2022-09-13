@@ -74,10 +74,10 @@ def det_matrix(matrix: [[int]], i, j):
     return new_matrix
 
 
-# def print_exec_time(func: callable(object), **kwargs: dict[str: Any]) -> None:
-#     start_time = time.time()
-#     func(**kwargs)
-#     print(f'duration: {time.time() - start_time} seconds')
+def print_exec_time(func: callable(object), **kwargs: dict[str: Any]) -> None:
+    start_time = time.time()
+    func(**kwargs)
+    print(f'duration: {time.time() - start_time} seconds')
 
 
 def main():
