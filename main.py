@@ -9,7 +9,7 @@ def gcd_recursive(a: int, b: int) -> int:
     """
     if a is None or b is None:
         raise Exception()
-    if a == b: return b
+    if a == b: return a
     if a * b == 0: return a + b
     if a < b:
         a, b = b, a
