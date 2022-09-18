@@ -7,7 +7,9 @@ def gcd_recursive(a: int, b: int) -> int:
     :except Exception: when a or b value is None
     :return: greatest common divisor
     """
-    pass
+    if a is None or b is None:
+        raise Exception("TypeError")
+    return a if b == 0 else gcd_recursive(b, a % b)
 
 
 def gcd_iterative_slow(a: int, b: int) -> int:
@@ -19,7 +21,13 @@ def gcd_iterative_slow(a: int, b: int) -> int:
     :except Exception: when a or b value is None
     :return: greatest common divisor
     """
-    pass
+    if a is None or b is None:
+        raise Exception("TypeError")
+    while a != b and a * b != 0:
+        if a < b:
+            a, b = b, a
+        a -= b
+    return a
 
 
 def gcd_iterative_fast(a: int, b: int) -> int:
@@ -31,7 +39,11 @@ def gcd_iterative_fast(a: int, b: int) -> int:
     :except Exception: when a or b value is None
     :return: greatest common divisor
     """
-    pass
+    if a is None or b is None:
+        raise Exception("TypeError")
+    while b:
+        a, b = b, a % b
+    return a
 
 
 def lcm(a: int, b: int) -> int:
@@ -42,7 +54,7 @@ def lcm(a: int, b: int) -> int:
     :except Exception: when a or b value is None
     :return: the least common multiple
     """
-    pass
+    return int(a * b / gcd_iterative_fast(a, b))
 
 
 def main():
