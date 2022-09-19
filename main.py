@@ -15,7 +15,26 @@ def generate_permutations(items: frozenset[Any]) -> list[str]:
     :raise Exception: when the items value is None.
     :return: a list with permutation strings.
     """
-    pass
+    if items is None:
+        raise Exception("when the items value is None.")
+    if len(items) == 0:
+        return []
+    return list(map(lambda x: "".join(str(e) for e in x), (__recursia(list(items), [[]].pop(0)))))
+
+
+def __recursia(items: list[Any], itog: list[[Any]]) -> list[list]:
+    if len(items) == 1:
+        itog.append(items)
+        return itog
+    current = items.pop(0)
+    itog = __recursia(items, itog)
+    for i in range(len(itog)):
+        itog[i].append(current)
+    for k in range(len(itog)):
+        for j in range(len(itog[-1]) - 1):
+            itog.append(itog[k].copy())
+            itog[-1][-1], itog[-1][j] = itog[-1][j], itog[-1][-1]
+    return itog
 
 
 def main():
