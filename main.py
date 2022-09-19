@@ -9,13 +9,35 @@ def print_exec_time(func: callable(object), **kwargs: dict[str: Any]) -> None:
 
 
 def generate_permutations(items: frozenset[Any]) -> list[str]:
-    """Generates all permutations by a set of items.
+    mas = []
+    mas = set(items)
+    ma_2 = []
 
-    :param items: a frozenset(immutable) with some items.
-    :raise Exception: when the items value is None.
-    :return: a list with permutation strings.
-    """
-    pass
+    def permutation(s):
+        if len(s) == 1:
+            return [s]
+
+        perm_list = []
+        for a in s:
+            remaining_elements = [x for x in s if x != a]
+            z = permutation(remaining_elements)
+
+            for t in z:
+                perm_list.append([a] + t)
+
+        return perm_list
+
+    arr = mas
+
+    for line in permutation(arr):
+        t = str(line)
+        m = ""
+        for i in line:
+            m += str(i)
+
+        ma_2.append(m)
+
+    return ma_2
 
 
 def main():
