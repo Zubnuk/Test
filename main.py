@@ -1,4 +1,5 @@
 import time
+import turtle
 from typing import Any
 
 
@@ -15,14 +16,39 @@ def generate_permutations(items: frozenset[Any]) -> list[str]:
     :raise Exception: when the items value is None.
     :return: a list with permutation strings.
     """
-    pass
+    s = list(items)
+    for i in range(len(s)):
+        s[i] = str(s[i])
+    if len(items) == 0:
+        return []
+    if items is None: 
+        raise Exception("Items value is None.")
+    if len(items) == 1:
+        return [s[0]]
+    resul = []
+    for i in range(len(s)):
+       m = s[i]
+ 
+       remLst = s[:i] + s[i+1:]
+    
+       for p in generate_permutations(remLst):
+            resul.append(m + p)
+    new_resul=[]
+    num = ""
+    for i in resul:
+        for iyem in i:
+            num+=str(iyem)
+        new_resul.append(num)
+        num = ""
+    return new_resul
+        
+
 
 
 def main():
-    print_exec_time(lambda items: print(generate_permutations(items)),
-                    items={1, 2, 3})
-    print_exec_time(lambda items: print(generate_permutations(items)),
-                    items={1, 2, 3, 4, 5})
+    print(generate_permutations(frozenset(('a', 'b', 'c'))))
+    # print_exec_time(lambda items: print(generate_permutations(items)),
+    #                 items=[1,2,3,4,5])
 
 
 if __name__ == '__main__':
