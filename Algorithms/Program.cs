@@ -22,6 +22,17 @@ namespace Algorithms
             _cost = cost;
             _path = path;
         }
+        
+        /// <summary>
+        /// Searches for the minimum cost path in the table. Each cell in the table has some price per visit.
+        /// </summary>
+        /// <param name="priceTable">A matrix with float cell price values.</param>
+        /// <exception cref="ArgumentException">When the table is empty.</exception>
+        /// <returns>A MinCostPath object with the cost value and the path.</returns>
+        public static MinCostPath GetMinCostPath(double[,] priceTable)
+        {
+            throw new NotImplementedException();
+        }
 
         public override string ToString()
         {
@@ -40,17 +51,6 @@ namespace Algorithms
     }
     public static class Program
     {
-        /// <summary>
-        /// Searches for the minimum cost path in the table. Each cell in the table has some price per visit.
-        /// </summary>
-        /// <param name="priceTable">A matrix with float cell price values.</param>
-        /// <exception cref="ArgumentException">When the table is empty.</exception>
-        /// <returns>A MinCostPath object with the cost value and the path.</returns>
-        public static MinCostPath GetMinCostPath(double[,] priceTable)
-        {
-            throw new NotImplementedException();
-        }
-
         public static void Main(string[] args)
         {
             double[,] priceTable = new double[3, 3]
@@ -59,7 +59,7 @@ namespace Algorithms
                 {3.0, 4.0, 2.0},
                 {1.0, 1.0, 2.0}
             };
-            Console.WriteLine(GetMinCostPath(priceTable));
+            Console.WriteLine(MinCostPath.GetMinCostPath(priceTable));
         }
     }
 }
