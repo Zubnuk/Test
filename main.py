@@ -9,14 +9,20 @@ def print_exec_time(func: callable(object), **kwargs: dict[str: Any]) -> None:
 
 
 def generate_permutations(items: frozenset[Any]) -> list[str]:
-    """Generates all permutations by a set of items.
-
-    :param items: a frozenset(immutable) with some items.
-    :raise Exception: when the items value is None.
-    :return: a list with permutation strings.
-    """
-    pass
-
+    if None in items:
+        raise Exception("There is None Value in items!")
+    s = list(items)
+    s2 = []
+    if len(s) == 0:
+        return []
+    if len(s) == 1:
+        return s
+    for item in s:
+        pars = [i for i in s if i != item]
+        list1 = generate_permutations(frozenset(pars))
+        for k in list1:
+            s2.append((str(item)) + str(k))
+    return s2
 
 def main():
     print_exec_time(lambda items: print(generate_permutations(items)),
