@@ -9,8 +9,30 @@ def print_exec_time(func: callable(object), **kwargs: dict[str: Any]) -> None:
 
 
 def generate_permutations(items: frozenset[Any]) -> list[str]:
-    mas = []
-    mas = set(items)
+
+    if items is None:
+        raise Exception("Элементы отсутствуют")
+    if len(items) == 0:
+        return []
+    return list(map(lambda s: "".join(str(x) for x in s), (permutation(list(items), [[]].pop(0)))))
+
+
+def permutation(items: list[Any], result: list[[Any]]) -> list[list]:
+    if len(items) == 1:
+        result.append(items)
+        return result
+    current = items.pop(0)
+    result = permutation(items, result)
+    for i in range(len(result)):
+        result[i].append(current)
+    for z in range(len(result)):
+        for v in range(len(result[-1]) - 1):
+            result.append(result[z].copy())
+            result[-1][-1], result[-1][v] = result[-1][v], result[-1][-1]
+    return result
+
+    """mas = []
+    mas = list(items)
     ma_2 = []
 
     def permutation(s):
@@ -27,17 +49,17 @@ def generate_permutations(items: frozenset[Any]) -> list[str]:
 
         return perm_list
 
-    arr = mas
+    arr = unique_permutations(mas)
 
-    for line in permutation(arr):
+    for line in permutations(arr):
         t = str(line)
         m = ""
         for i in line:
             m += str(i)
 
         ma_2.append(m)
-
-    return ma_2
+        
+    return ma_"""
 
 
 def main():
