@@ -16,7 +16,7 @@ def generate_permutations(items: frozenset[Any]) -> list[str]:
     if len(s) == 0:
         return []
     if len(s) == 1:
-        return s
+        return [str(s[0])]
     for item in s:
         pars = [i for i in s if i != item]
         list1 = generate_permutations(frozenset(pars))
