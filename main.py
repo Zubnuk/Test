@@ -1,44 +1,21 @@
-def get_shortest_path_dijkstra(dist_matrix: list[list[int]], source_idx: int,
-                               target_idx: int) -> dict[str: int, list[int]]:
-    """Calculates using Dijkstra's algorithm the shortest path between two
-    vertices in an ordered graph.
+class ArgumentException(Exception):
+    """Exception raised for errors in the input parameter.
 
-    :param dist_matrix: an integer matrix with distances values.
-    :param source_idx: index of the source vertex.
-    :param target_idx: index of the target vertex.
-    :raise Exception: when dist_matrix is not a square integer matrix, when
-    the source_idx is equal to the target_idx, when the source_idx or the
-    target_idx is great or equal to the number of vertices.
-    :return: a dictionary with keys: distance - the shortest distance value,
-    path - an ordered list of vertices indexes.
+    Attributes:
+        message -- explanation of the error
     """
-    pass
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 
-def get_shortest_path_floyd_warshall(dist_matrix: list[list[int]],
-                                     source_idx: int, target_idx: int) -> \
-        dict[str: int, list[int]]:
-    """Calculates using Floyd–Warshall's algorithm the shortest path between two
-    vertices in an ordered graph.
-
-    :param dist_matrix: an integer matrix with distances values.
-    :param source_idx: index of the source vertex.
-    :param target_idx: index of the target vertex.
-    :raise Exception: when dist_matrix is not a square integer matrix, when
-    the source_idx is equal to the target_idx, when the source_idx or the
-    target_idx is great or equal to the number of vertices.
-    :return: a dictionary with keys: distance - the shortest distance value,
-    path - an ordered list of vertices indexes.
-    """
-    pass
-
-
-def get_min_cost_path(price_table: list[list[int]]) ->\
-        dict[str: int, str: list[tuple[int, int]]]:
+def get_min_cost_path(price_table: list[list[float]]) ->\
+        dict[str: float, str: list[tuple[int, int]]]:
     """Searches for the minimum cost path in the table. Each cell in the table
     has some price per visit.
-    :param price_table: an integer matrix with cell price values.
-    :raise Exception: when price_table is not an integer matrix.
+    :param price_table: a matrix with float cell price values.
+    :raise ArgumentException: when price_table is not a rectangle float matrix.
     :return: a dictionary with keys: cost - the minimum value of the cost of the
     path, path - an ordered list of tuples with cell indices.
     """
@@ -46,19 +23,9 @@ def get_min_cost_path(price_table: list[list[int]]) ->\
 
 
 def main():
-    matrix = [[0, None, None],
-              [1, 0, None],
-              [None, 1, 0]]
-    print(get_shortest_path_dijkstra(matrix, 2, 0))
-
-    matrix = [[0, 2, 1],
-              [None, 0, -2],
-              [None, None, 0]]
-    print(get_shortest_path_floyd_warshall(matrix, 0, 2))
-
-    table = [[1, 2, 2],
-             [3, 4, 2],
-             [1, 1, 2]]
+    table = [[1., 2., 2.],
+             [3., 4., 2.],
+             [1., 1., 2.]]
     print(get_min_cost_path(table))
 
 
