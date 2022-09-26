@@ -59,12 +59,10 @@ def checker(price_table: list[list[float]]) -> Exception:
                 raise Exception('The price table is not a rectangular matrix with float values')
 
 
-
-
 def main():
     table = [[1., 2., 2.],
-            [3., 4., 2.],
-            [1., 1., 2.]]
+             [3., 4., 2.],
+             [1., 1., 2.]]
     print(get_min_cost_path(table))
 
 
