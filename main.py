@@ -42,7 +42,7 @@ def get_min_cost_path(price_table: list[list[float]]) -> \
     for i in range(len(price_table) + 1):
         buff.append(list())
         for j in range(len(price_table[0]) + 1):
-            buff[i].append(1000.)
+            buff[i].append(float('inf'))
     buff.pop()
     buff[1][1] = price_table[0][0]
     for i in range(1, len(buff)):
