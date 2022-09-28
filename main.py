@@ -23,13 +23,13 @@ def get_min_cost_path(price_table: list[list[float]]) -> \
         raise Exception("The price table is not a rectangular matrix with float values")
     if len(price_table) == 0:
         raise Exception("The price table is not a rectangular matrix with float values")
-    if isinstance(price_table[0][0], str):
-        raise Exception("The price table is not a rectangular matrix with float values")
+    for item in price_table:
+        for _item in item:
+            if isinstance(_item, str):
+                raise Exception("The price table is not a rectangular matrix with float values")
 
     dlin = len(price_table[0])
-    d = 0
     for i in range(len(price_table)):
-        d += 1
         for j in range(len(price_table[i])):
             if dlin != len(price_table[i]):
                 raise Exception("The price table is not a rectangular matrix with float values")
@@ -44,38 +44,30 @@ def get_min_cost_path(price_table: list[list[float]]) -> \
 
     for row in range(1, len(price_table) + 1):
         for column in range(1, len(price_table[0]) + 1):
-            print('row', row, ' column', column)
             if row == 1 and column == 1:
                 continue
-
-            # print('min ', new_price_table[row - 1][column], new_price_table[row][column - 1])
-            # print('+ ', new_price_table[row][column])
-
             new_price_table[row][column] += \
                 min(new_price_table[row - 1][column], new_price_table[row][column - 1])
 
     Min_path = new_price_table[-1][-1]
-
-    for item in new_price_table:
-        print(item)
-
     mas_path.append((len(price_table) - 1, len(price_table[0]) - 1))
     row, column = len(price_table), len(price_table[0])
-    while row != 0 and column != 0:
+    while row * column != 1:
         if new_price_table[row][column - 1] < new_price_table[row - 1][column]:
             column -= 1
         else:
             row -= 1
         mas_path.append((row - 1, column - 1))
 
-    del mas_path[-1]
     mas_path.reverse()
 
     return {'cost': Min_path, 'path': mas_path}
 
 
 def main():
-    table = ['ab']
+    table = [[1., 2., 2.],
+             [3., 4., 2.],
+             [1., 1., 2.]]
     print(get_min_cost_path(table))
 
 
