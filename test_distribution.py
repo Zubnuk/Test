@@ -1,16 +1,33 @@
 import unittest
 
 from main import invest_distribution
+from custom_exception import ArgumentException
 
 
 class TestDistribution(unittest.TestCase):
-    def test_empty_matrix(self):
-        self.assertRaises(Exception, invest_distribution, None)
+    def test_none(self):
+        self.assertRaisesRegex(ArgumentException,
+                               'parameter is not an integer rectangle matrix',
+                               invest_distribution, None)
+
+    def test_empty(self):
+        self.assertRaisesRegex(ArgumentException,
+                               'parameter is not an integer rectangle matrix',
+                               invest_distribution, [])
 
     def test_jag_matrix(self):
         matrix = [[15, 18, 16, 17],
                   [20, 22, 23]]
-        self.assertRaises(Exception, invest_distribution, matrix)
+        self.assertRaisesRegex(ArgumentException,
+                               'parameter is not an integer rectangle matrix',
+                               invest_distribution, matrix)
+
+    def test_has_str(self):
+        matrix = [[15, 18, 16],
+                  [20, 22, 'str']]
+        self.assertRaisesRegex(ArgumentException,
+                               'parameter is not an integer rectangle matrix',
+                               invest_distribution, matrix)
 
     def test_single_value(self):
         matrix = [[1]]
