@@ -29,8 +29,8 @@ def get_min_cost_path(price_table: list[list[float]]) -> \
     t = price_table
     a = [[float('inf') for i in range(len(t[0]) + 1)] for j in range(len(t) + 1)]
     a[1][1] = t[0][0]
-    for i in range(1, len(t) + 1):  # 1
-        for j in range(1, len(t[0]) + 1):  # 3
+    for i in range(1, len(t) + 1):
+        for j in range(1, len(t[0]) + 1):
             a[i][j] = min(a[i][j - 1], a[i - 1][j]) + t[i - 1][j - 1]
             if i == 1 and j == 1:
                 a[i][j] = t[0][0]
