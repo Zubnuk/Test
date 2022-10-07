@@ -13,38 +13,40 @@ def invest_distribution(profit_matrix: list[list[int]]) -> \
     a list with the part of investments for each project. The result example:
     {'profit': 73, 'parts': [1, 1, 2, 1]}
     """
+    exception_message = 'parameter is not an integer rectangle matrix'
     if not (type(profit_matrix) is list):
-        raise ArgumentException('parameter is not an integer rectangle matrix')
+        raise ArgumentException(exception_message)
     if len(profit_matrix) == 0:
-        raise ArgumentException('parameter is not an integer rectangle matrix')
-    length = len(profit_matrix[0])
+        raise ArgumentException(exception_message)
+    Len = len(profit_matrix[0])
     for i in profit_matrix:
         if not (type(i) is list):
-            raise ArgumentException('parameter is not an integer rectangle matrix')
-        if len(i) != length:
-            raise ArgumentException('parameter is not an integer rectangle matrix')
+            raise ArgumentException(exception_message)
+        if len(i) != Len:
+            raise ArgumentException(exception_message)
         for j in i:
             if not (type(j) is int):
-                raise ArgumentException('parameter is not an integer rectangle matrix')
+                raise ArgumentException(exception_message)
+    if len(profit_matrix[0]) == 1:
+        return {'profit': profit_matrix[0][0], 'parts': [1]}
 
-    global masAB, masABC, masABCD
-    masAB = []
-    masABC = []
-    masABCD = []
+    global mas_buf
+    mas_buf = {}
+    path = []
+    profit = 0
 
     new_profit_matrix = [[0] * (len(profit_matrix[0])) for i in range(len(profit_matrix) + 1)]
-
     for row in range(1, len(profit_matrix) + 1):
         for column in range(len(profit_matrix[0])):
             new_profit_matrix[row][column] = profit_matrix[row - 1][column]
 
-    def res(kol):
+    def repositioning(kol):
         d = []
         for i in range(kol + 1):
             d.append((i, kol - i))
         return d
 
-    def price(i, index, mas=None):
+    def price(kol, index, mas=None):
         global prov
 
         def get_key(dict, value):
@@ -53,7 +55,7 @@ def invest_distribution(profit_matrix: list[list[int]]) -> \
                     return k
 
         mas_path = {}
-        d = res(i)
+        d = repositioning(kol)
         for j in d:
             mas_path[j] = 0
             prov = False
@@ -63,7 +65,7 @@ def invest_distribution(profit_matrix: list[list[int]]) -> \
                 if prov:
                     continue
 
-                if i % 2 == 0 and i / 2 == item:
+                if kol % 2 == 0 and kol / 2 == item:
                     if index > 0 and j[0] > 0:
                         prov = True
                         for key, value in mas[item - 1].items():
@@ -85,54 +87,46 @@ def invest_distribution(profit_matrix: list[list[int]]) -> \
         Max = max(mas_path.values())
         return {get_key(mas_path, Max): max(mas_path.values())}
 
-    if len(profit_matrix[0]) == 1:
-        return {'profit': profit_matrix[0][0], 'parts': [1]}
+    key = 0
+    for i in range(0, len(new_profit_matrix[0]) - 1):
+        mas_buf[i] = []
+        for j in range(1, len(new_profit_matrix)):
+            if i > 0:
+                key = i - 1
+            mas_buf[i].append(price(j, i, mas_buf[key]))
 
-    if len(profit_matrix[0]) == 2:
-        path = []
-        profit = 0
-        for i in range(1, len(new_profit_matrix)):
-            masAB.append(price(i, 0))
-
-        for key, value in masAB[-1].items():
-            profit = value
-            path.append(key[-1])
-            path.append(0)
-        path.reverse()
-
-        return {'profit': profit, 'parts': path}
-
-    for i in range(1, len(new_profit_matrix)):
-        masAB.append(price(i, 0))
-
-    for i in range(1, len(new_profit_matrix)):
-        masABC.append(price(i, 1, masAB))
-
-    for i in range(1, len(new_profit_matrix)):
-        masABCD.append(price(i, 2, masABC))
-
-    path = []
-    profit = 0
-    for key, value in masABCD[-1].items():
+    for key, value in mas_buf[len(new_profit_matrix[0]) - 2][-1].items():
         profit = value
-        path.append(key[-1])
-        if key[0] == 0:
-            for i in range(1, len(profit_matrix[0])):
-                path.append(0)
-            continue
-        for k, v in masABC[key[0] - 1].items():
-            path.append(k[-1])
-            for a, b in masAB[k[0] - 1].items():
-                path.append(a[-1])
-                path.append(a[0])
-    path.reverse()
 
+    def get_key(mas):
+        for key, value in mas.items():
+            return key
+
+    next = 0
+    for i in range(len(new_profit_matrix[0]) - 2, -1, -1):
+        path.append(get_key(mas_buf[i][next - 1])[-1])
+        if i == 0:
+            path.append(get_key(mas_buf[i][next - 1])[0])
+            break
+        next = get_key(mas_buf[i][next - 1])[0]
+        if next == 0:
+            if i == -1:
+                path.append(get_key(mas_buf[i][next - 1])[0])
+                break
+            for _ in range(i + 1):
+                path.append(0)
+            break
+
+    path.reverse()
     return {'profit': profit, 'parts': path}
 
 
 def main():
-    profit_matrix = [[1, 2],
-                     [3, 5]]
+    profit_matrix = [[5, 4, 4, 7],
+                     [6, 7, 8, 12],
+                     [1, 10, 15, 12],
+                     [2, 12, 23, 15],
+                     [6, 15, 42, 18]]
     print(invest_distribution(profit_matrix))
 
 
