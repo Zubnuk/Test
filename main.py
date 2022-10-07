@@ -1,22 +1,16 @@
-import time
-
-from fibonacci.fibbonacci import fibonacci
+from custom_exception import ArgumentException
 
 
-def print_fibonacci(num: int) -> None:
-    print("{0:d}: {1:d}".format(num, fibonacci(num)))
-
-
-def get_exec_time(function: callable(object), argument: int) -> float:
-    start_time = time.time()
-    function(argument)
-    return time.time() - start_time
+def tridiagonal_determinant(matrix: list[list[int]]) -> int:
+    pass
 
 
 def main():
-    for num in [10, 20, 30, 35]:
-        print("duration: {0} seconds".format(get_exec_time(print_fibonacci,
-                                                           num)))
+    matrix = [[2, -3, 0, 0],
+              [5, 2, -3, 0],
+              [0, 5, 2, -3],
+              [0, 0, 5, 2]]
+    print(tridiagonal_determinant(matrix))
 
 
 if __name__ == '__main__':
