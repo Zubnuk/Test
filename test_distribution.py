@@ -73,7 +73,7 @@ class TestDistribution(unittest.TestCase):
                   [9, 10, 11, 12],
                   [17, 21, 23, 16],
                   [28, 35, 32, 29],
-                  [43, 41, 40, 43]]
+                  [42, 41, 40, 43]]
         result = invest_distribution(matrix)
         self.assertEqual(result['profit'], 43)
         self.assertEqual(result['parts'], [0, 0, 0, 5])
