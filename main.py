@@ -14,19 +14,19 @@ def invest_distribution(profit_matrix: list[list[int]]) -> \
     """
 
     if profit_matrix is None:
-        raise Exception('parameter is not an integer rectangle matrix')
+        raise ArgumentException('parameter is not an integer rectangle matrix')
 
     if len(profit_matrix) == 0:
-        raise Exception('parameter is not an integer rectangle matrix')
+        raise ArgumentException('parameter is not an integer rectangle matrix')
 
     for i in profit_matrix:
         for j in i:
             if not (isinstance(j, int)):
-                raise Exception('parameter is not an integer rectangle matrix')
+                raise ArgumentException('parameter is not an integer rectangle matrix')
 
     for y in range(len(profit_matrix) - 1):
         if len(profit_matrix[y]) != len(profit_matrix[y + 1]):
-            raise Exception('parameter is not an integer rectangle matrix')
+            raise ArgumentException('parameter is not an integer rectangle matrix')
 
     t = profit_matrix
     a = [[0 for i in range(len(t[0]) + 1)] for j in range(len(t) + 1)]
