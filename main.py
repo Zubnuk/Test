@@ -87,11 +87,11 @@ def invest_distribution(profit_matrix: list[list[int]]) -> \
 
 
 def main():
-    profit_matrix = [[5, 3, 7, 6],
-                     [9, 10, 11, 12],
-                     [17, 21, 23, 16],
-                     [28, 35, 32, 29],
-                     [43, 41, 40, 43]]
+    profit_matrix = [[15, 18, 16, 17],
+                     [20, 22, 23, 19],
+                     [26, 28, 27, 25],
+                     [34, 33, 29, 31],
+                     [40, 39, 41, 37]]
     print(invest_distribution(profit_matrix))
 
 
