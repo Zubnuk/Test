@@ -5,8 +5,6 @@ IS_NOT_INT_RECTANGLE_MATRIX_ERROR = "parameter is not an integer rectangle matri
 PARTS = "parts"
 PROFIT = "profit"
 
-DICT = []  # dynamic store - сюда записываются промежуточные результаты вычислений
-
 
 def error_handler(parameter):  # handle invalid parameter error
     if parameter is None:
@@ -39,34 +37,33 @@ def get_max_profit(profits_list):  # утила - находит объект {p
     return max_profit
 
 
-def init_dict(col):  # инициализация dynamic store
+def init_store(col, store):  # инициализация dynamic store
     for idx in range(len(col)):
-        DICT.append({PROFIT: col[idx], PARTS: [idx + 1]})
+        store.append({PROFIT: col[idx], PARTS: [idx + 1]})
 
 
-def update_dict(col):  # обновление значений в dynamic store
-    new_dict = []
+def update_store(col, store):  # обновление значений в dynamic store
+    new_store = []
     for idx in range(len(col)):
-        profit = calc_intermediate_profit(col, idx)
+        profit = calc_intermediate_profit(col, idx, store)
         parts = profit[PARTS]
         new_parts = []
         if parts[0] - 1 == -1:
-            for i in range(len(DICT[idx][PARTS])):
+            for i in range(len(store[idx][PARTS])):
                 new_parts.append(0)
         else:
-            new_parts = deepcopy(DICT[parts[0] - 1][PARTS])
+            new_parts = deepcopy(store[parts[0] - 1][PARTS])
 
         new_parts.append(parts[1])
-        new_dict.append({
+        new_store.append({
             PROFIT: profit[PROFIT],
             PARTS: new_parts
         })
 
-    for i in range(len(new_dict)):
-        DICT[i] = new_dict[i]
+    return new_store
 
 
-def calc_intermediate_profit(col, idx):  # перебор значений по бюджету (возвращает максимальное значение)
+def calc_intermediate_profit(col, idx, store):  # перебор значений по бюджету (возвращает максимальное значение)
     first_budget = -1
     second_budget = idx
     profits_list = []
@@ -79,12 +76,12 @@ def calc_intermediate_profit(col, idx):  # перебор значений по 
             })
         elif second_budget == -1:
             profits_list.append({
-                PROFIT: DICT[first_budget][PROFIT],
+                PROFIT: store[first_budget][PROFIT],
                 PARTS: [first_budget + 1, 0]
             })
         else:
             profits_list.append({
-                PROFIT: DICT[first_budget][PROFIT] + col[second_budget],
+                PROFIT: store[first_budget][PROFIT] + col[second_budget],
                 PARTS: [first_budget + 1, second_budget + 1]
             })
 
@@ -94,8 +91,7 @@ def calc_intermediate_profit(col, idx):  # перебор значений по 
     return get_max_profit(profits_list)
 
 
-def invest_distribution(profit_matrix: list[list[int]]) -> \
-        dict[str: int, str: list[int]]:
+def invest_distribution(profit_matrix):
     """Calculates the optimal distribution of investments between several
     projects. Investments are distributed in predetermined parts.
 
@@ -108,12 +104,12 @@ def invest_distribution(profit_matrix: list[list[int]]) -> \
     """
 
     error_handler(profit_matrix)  # handle invalid parameter error
-    init_dict(slice_col(profit_matrix, 0))
-
+    store = []  # dynamic store - сюда записываются промежуточные результаты вычислений
+    init_store(slice_col(profit_matrix, 0), store)
     for col_idx in range(1, len(profit_matrix[0])):
-        update_dict(slice_col(profit_matrix, col_idx))
+        store = update_store(slice_col(profit_matrix, col_idx), store)
 
-    return get_max_profit(DICT)
+    return get_max_profit(store)
 
 
 def main():
