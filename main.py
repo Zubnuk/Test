@@ -2,6 +2,11 @@ from custom_exception import ArgumentException
 
 
 def tridiagonal_determinant(matrix: list[list[int]]) -> int:
+    """Calculates the value of the tridiagonal matrix determinant
+    :param matrix: an integer tridiagonal square matrix
+    :raise ArgumentException: when parameter is not a tridiagonal integer matrix
+    :return: the value of the matrix determinant
+    """
     pass
 
 
