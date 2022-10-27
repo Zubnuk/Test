@@ -1,6 +1,7 @@
 import unittest
+
 from main import get_triangle_path_count
-from castom_exception import ArgumentException
+from custom_exception import ArgumentException
 
 
 class TestTrianglePath(unittest.TestCase):
