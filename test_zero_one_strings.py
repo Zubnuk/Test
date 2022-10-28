@@ -15,24 +15,24 @@ class TestZeroOne(unittest.TestCase):
 
     def test_negative(self):
         self.assertRaisesRegex(ArgumentException,
-                               'The parameter must be integer equal or greater '
-                               'than zero',
+                               'The parameter length must be an integer '
+                               'greater than 0',
                                generate_strings, -1)
 
     def test_none(self):
         self.assertRaisesRegex(ArgumentException,
-                               'The parameter must be integer equal or greater '
-                               'than zero',
+                               'The parameter length must be an integer '
+                               'greater than 0',
                                generate_strings, None)
 
     def test_not_int(self):
         self.assertRaisesRegex(ArgumentException,
-                               'The parameter must be integer equal or greater '
-                               'than zero',
+                               'The parameter length must be an integer '
+                               'greater than 0',
                                generate_strings, 1.1)
 
     def test_zero_one(self):
-        for i in range(20):
+        for i in range(1, 20):
             self.assertCountEqual(generate_strings(i),
                                   TestZeroOne.__get_strings_to_check(i))
 

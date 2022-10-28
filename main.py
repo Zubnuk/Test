@@ -28,4 +28,5 @@ def main():
     print(generate_strings(5))
 
 
-main()
+if __name__ == '__main__':
+    main()
