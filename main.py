@@ -14,6 +14,9 @@ DOWNTIME = 'downtime'
 
 class _ScheduleTask:
     def __init__(self, task: Task):
+        error_msg = _ScheduleTask.__get_param_error(task)
+        if error_msg is not None:
+            raise ScheduleArgumentException(error_msg)
         self.__task = task
         self.__stage1_start = None
         self.__stage2_start = None
@@ -66,6 +69,12 @@ class _ScheduleTask:
     @property
     def stage2_end(self) -> int:
         return self.__stage2_start + self.__task.stage2
+
+    @staticmethod
+    def __get_param_error(task: Task) -> Union[str, None]:
+        if type(task) != Task:
+            return 'The task parameter is not a Task'
+        return None
 
 
 class Schedule:
@@ -183,9 +192,6 @@ def main():
     print(f'total downtime of conveyors:{sched.total_downtime}')
     print(f'\nthe first conveyor schedule:\n{sched.conveyor1_schedule}')
     print(f'\nthe second conveyor schedule:\n{sched.conveyor2_schedule}')
-
-
-main()
 
 
 if __name__ == '__main__':
