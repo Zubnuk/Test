@@ -4,12 +4,17 @@ from typing import List
 
 from custom_exception import ArgumentException
 
-def tridiagonal_determinant(matrix: List[List[int]]) -> int:
-    """Calculates the value of the tridiagonal matrix determinant
-    :param matrix: an integer tridiagonal square matrix
-    :raise ArgumentException: when parameter is not a tridiagonal integer matrix
-    :return: the value of the matrix determinant
-    """
+
+def recursion(a, b, c, n):
+    if n == 1:
+        return a
+    if n == 2:
+        return a ** 2 - b * c
+    else:
+        return a * recursion(a, b, c, n - 1) - b * c * recursion(a, b, c, n - 2)
+
+
+def check_matrix(matrix: List[List[int]]):
     if matrix == [] or matrix == None:
         raise ArgumentException('parameter is not a tridiagonal integer matrix')
     n = len(matrix[0])
@@ -41,29 +46,28 @@ def tridiagonal_determinant(matrix: List[List[int]]) -> int:
             raise ArgumentException('parameter is not a tridiagonal integer matrix')
         elif matrix[i].count(0) < n - 3:
             raise ArgumentException('parameter is not a tridiagonal integer matrix')
+
+
+def tridiagonal_determinant(matrix: List[List[int]]) -> int:
+    """Calculates the value of the tridiagonal matrix determinant
+    :param matrix: an integer tridiagonal square matrix
+    :raise ArgumentException: when parameter is not a tridiagonal integer matrix
+    :return: the value of the matrix determinant
+    """
+    check_matrix(matrix)
+    if len(matrix[0]) == len(matrix) == 1:
+        return matrix[0][0]
+    n = len(matrix[0])
     a = matrix[0][0]
-    if n == 1:
-        return a
     b = matrix[1][0]
     c = matrix[0][1]
-    if n == 2:
-        return a ** 2 - b * c
-    else:
-        matrix_n_1 = copy.deepcopy(matrix)
-        del matrix_n_1[0]
-        for i in range(len(matrix_n_1)):
-            del matrix_n_1[i][0]
-        matrix_n_2 = copy.deepcopy(matrix_n_1)
-        del matrix_n_2[0]
-        for i in range(len(matrix_n_2)):
-            del matrix_n_2[i][0]
-        return a * tridiagonal_determinant(matrix_n_1) - b * c * tridiagonal_determinant(matrix_n_2)
+    return recursion(a, b, c, n)
 
 
 def main():
-    matrix = [[1, 2, 0, 0],
+    matrix = [[1, 7, 0, 0],
               [3, 1, 2, 0],
-              [0, 3, 1],
+              [0, 3, 1, 2],
               [0, 0, 3, 1]]
     print(tridiagonal_determinant(matrix))
 
