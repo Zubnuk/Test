@@ -41,12 +41,12 @@ def check_matrix(matrix: list[list[int]]) -> bool:
     return True
 
 
-def calc_det(a, b, c, s):
-    if s == 1:
+def calc_det(a, b, c, n):
+    if n == 1:
         return a
-    if s == 2:
+    if n == 2:
         return a * a - b * c
-    return a * calc_det(a, b, c, s - 1) - b * c * calc_det(a, b, c, s - 2)
+    return a * calc_det(a, b, c, n - 1) - b * c * calc_det(a, b, c, n - 2)
 
 
 def main():
