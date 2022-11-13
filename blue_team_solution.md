@@ -15,10 +15,12 @@ $$
 
 $1) \bigtriangleup_n = 11 * \bigtriangleup_{n-1} - 2*14 * \bigtriangleup_{n-2}$
 $\lambda^n = 11 * \lambda^{n-1} - 28 * \lambda^{n-2}$
+
 $2) \lambda^n - 11 * \lambda^{n-1} + 28 * \lambda^{n-2} = 0| :\lambda^{n-2}$
 $λ ^2 - 11λ + 28 = 0$
 $D = 121 - 28*4 = 9$
 $\lambda_1 = 7, \lambda_2 = 4$
+
 $3)\bigtriangleup_n  = C_1 * \lambda_1^n + C_2 * \lambda_2^n$
 $\text{Система:}$
 $\left\{\begin{matrix}
