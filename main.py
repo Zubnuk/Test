@@ -19,7 +19,7 @@ def check_matrix(matrix: list[list[int]]) -> bool:
         return False
     if len(matrix) == 0:
         return False
-    if len(matrix) == 1:
+    if len(matrix) == 1 and len(matrix[0]) == 1:
         return True
     if len(matrix) != len(matrix[0]):
         return False
