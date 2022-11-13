@@ -20,6 +20,13 @@ def tridiagonal_determinant(matrix: list[list[int]]) -> int:
             raise ArgumentException(exception_message)
     if len(matrix) == 1:
         return matrix[0][0]
+    if matrix[0][-1] != matrix[-1][0]:
+        raise ArgumentException(exception_message)
+    for row in range(len(matrix) - 1):
+        for column in range(len(matrix[0]) - 1):
+            elem = matrix[row][column]
+            if elem != matrix[row + 1][column + 1]:
+                raise ArgumentException(exception_message)
 
     a = matrix[0][0]
     b = matrix[0][1]
