@@ -26,14 +26,22 @@ $D = 121 - 28*4 = 9$
 $\lambda_1 = 7, \lambda_2 = 4$
 
 $3)\bigtriangleup_n  = C_1 * \lambda_1^n + C_2 * \lambda_2^n$
+
 $\text{Система:}$
+
 $\left\{\begin{matrix}
 11 = 7 * C_1 +4 * C_2\\ 
 93 = 49 * C_1 + 16 * C_2
 \end{matrix}\right.$
+
 $\text C_1 = \frac73, C_2 = - \frac43$
+
 $\text{Тогда: }$
+
 $\bigtriangleup_n  = \frac73 * 7^n - \frac43 * 4^n$
+
 $\bigtriangleup_n  = \frac13 *  (7^{n+1} - 4^{n+1})$
+
 $\bigtriangleup_{12}  = \frac13 *  (7^{13} - 4^{13})=32273967181$
+
 $\text{Ответ: 32273967181}$
