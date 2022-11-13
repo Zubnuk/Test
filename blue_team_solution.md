@@ -29,13 +29,9 @@ $3)\bigtriangleup_n  = C_1 * \lambda_1^n + C_2 * \lambda_2^n$
 
 $\text{Система:}$
 
-$\left\{\begin{matrix}
-
 11 = 7 * C_1 +4 * C_2\\ 
 
 93 = 49 * C_1 + 16 * C_2
-
-\end{matrix}\right.$
 
 $\text C_1 = \frac73, C_2 = - \frac43$
 
