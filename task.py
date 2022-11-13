@@ -5,25 +5,21 @@ from custom_exception import TaskArgumentException
 
 
 class Task:
-    """Represents a task object that is executed in two stages.
+    """Represents a task object with a time duration.
 
     Properties
     ----------
     name(self) -> str:
         Returns the task name.
 
-    stage1(self) -> int:
-        Returns the duration of the first stage of the task.
-
-    stage2(self) -> int:
-        Returns the duration of the second stage of the task.
+    duration(self) -> int:
+        Returns the duration of the task.
     """
     def __init__(self, name: str, duration: int):
         """Task class constructor to initialize the object.
 
         :param name: the task name.
-        :param stage1: the duration of the first stage of the task.
-        :param stage2: the duration of the second stage of the task.
+        :param duration: the duration of the task.
         :raise TaskArgumentException: when the task name is not a string,
             when the task name is empty, when the duration is not an integer,
             when the duration is less than 1.

@@ -28,12 +28,15 @@ class InternalScheduleException(Exception):
     """Exception raised by errors during processing tasks of the Schedule
     object.
     Attributes:
-        message -- explanation of the error
-        task -- a Task object
+        message -- explanation of the error.
+        task -- a Task object. Default value is None.
     """
 
-    def __init__(self, message, task):
+    def __init__(self, message, task=None):
         self.task = task
-        self.__prefix = f'Error during processing task {self.task.name}! '
+        if task is None:
+            self.__prefix = f'Error during processing task {self.task.name}! '
+        else:
+            self.__prefix = f'Schedule error! '
         self.message = self.__prefix + message
         super().__init__(self.message)

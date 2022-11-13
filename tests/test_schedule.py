@@ -10,34 +10,31 @@ class TestSchedule(unittest.TestCase):
         self.assertRaisesRegex(ScheduleArgumentException,
                                'Error during initialization of the Schedule '
                                'object! The tasks parameter is not a list',
-                               Schedule.__init__, None, None)
+                               Schedule.__init__, None, None, 1)
 
     def test_empty_tasks(self):
         self.assertRaisesRegex(ScheduleArgumentException,
                                'Error during initialization of the Schedule '
                                'object! The task list is empty',
-                               Schedule.__init__, None, [])
+                               Schedule.__init__, None, [], 1)
 
     def test_tasks_contains_non_task(self):
-        tasks = [Task('a', 7, 2), Task('b', 3, 4), 'non task object']
+        tasks = [Task('a', 7), Task('b', 3), 'non task object']
         self.assertRaisesRegex(ScheduleArgumentException,
                                'Error during initialization of the Schedule '
                                'object! The task list contains not a Task '
                                'object in the position 2',
-                               Schedule.__init__, None, tasks)
+                               Schedule.__init__, None, tasks, 1)
 
     def test_single(self):
-        task_a = Task('a', 1, 2)
-        sched = Schedule([task_a])
-        stage1_schedule = '1. task: a from: 0 to 1\n' \
-                          '2. task: downtime from: 1 to 3'
-        stage2_schedule = '1. task: downtime from: 0 to 1\n' \
-                          '2. task: a from: 1 to 3'
+        task_a = Task('a', 1)
+        sched = Schedule([task_a], 1)
+        executor1_schedule = '1. task: a from: 0 to 1'
         self.assertEqual(tuple([task_a]), sched.tasks)
-        self.assertEqual(tuple('a'), sched.tasks_names)
         self.assertEqual(1, sched.task_count)
-        self.assertEqual(3, sched.total_duration)
-        self.assertEqual(2, sched.stage1_downtime)
+        self.assertEqual(1, sched.executor_count)
+        self.assertEqual(1, sched.duration)
+        self.assertEqual(0, sched.downtime)
         self.assertEqual(1, sched.stage2_downtime)
         self.assertEqual(3, sched.total_downtime)
         self.assertEqual(stage1_schedule, sched.stage1_schedule)
