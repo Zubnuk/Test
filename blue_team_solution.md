@@ -10,7 +10,9 @@ A =
   0 & 0 & 0 & \cdots & 11 & 2 \\      
   0 & 0 & 0 & \cdots & 14 & 11       
  \end{pmatrix}      
-$$  
+$$ 
+
+
 $1) \bigtriangleup_n = 11 * \bigtriangleup_{n-1} - 2*14 * \bigtriangleup_{n-2}$
 $\lambda^n = 11 * \lambda^{n-1} - 28 * \lambda^{n-2}$
 $2) \lambda^n - 11 * \lambda^{n-1} + 28 * \lambda^{n-2} = 0| :\lambda^{n-2}$
