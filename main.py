@@ -8,21 +8,21 @@ def tridiagonal_determinant(matrix: list[list[int]]) -> int:
     :return: the value of the matrix determinant
     """
     checker(matrix)
-    return det(matrix)
-
-
-def det(matrix: list[list[int]]) -> int:
-    if len(matrix) == 1:
+    if (len(matrix)) == 1:
         return matrix[0][0]
-    elif len(matrix) == 2:
-        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
-    else:
-        smaller_matrix1, smaller_matrix2 = [], []
-        for row in range(0, len(matrix) - 1):
-            smaller_matrix1.append(matrix[row][0:-1])
-        for row in range(0, len(matrix) - 2):
-            smaller_matrix2.append(matrix[row][0:-2])
-        return matrix[0][0] * det(smaller_matrix1) - matrix[0][1] * matrix[1][0] * det(smaller_matrix2)
+    n = len(matrix[0])
+    a = matrix[0][0]
+    b = matrix[0][1]
+    c = matrix[1][0]
+    return det(a, b, c, n)
+
+
+def det(a, b, c, n) -> int:
+    if n == 1:
+        return a
+    elif n == 2:
+        return pow(a, 2) - b * c
+    return a * det(a, b, c, n - 1) - b * c * det(a, b, c, n - 2)
 
 
 def checker(matrix: list[list[int]]) -> bool:
