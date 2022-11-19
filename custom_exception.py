@@ -34,7 +34,7 @@ class InternalScheduleException(Exception):
 
     def __init__(self, message, task=None):
         self.task = task
-        if task is None:
+        if task is not None:
             self.__prefix = f'Error during processing task {self.task.name}! '
         else:
             self.__prefix = f'Schedule error! '
