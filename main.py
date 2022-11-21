@@ -1,11 +1,9 @@
-from typing import Union
+from typing import Union, List, Tuple
 import math
 
-
 from task import Task
-from custom_exception import ScheduleArgumentException,\
+from custom_exception import ScheduleArgumentException, \
     InternalScheduleException
-
 
 TASK = 'task'
 PART = 'part'
@@ -41,7 +39,8 @@ class Schedule:
     get_schedule_for_executor(self, executor_idx: int) -> str:
         Returns the schedule for the executor.
     """
-    def __init__(self, tasks: list[Task], executor_count: int):
+
+    def __init__(self, tasks: List[Task], executor_count: int):
         """Schedule class constructor to initialize the object.
 
         :param tasks: a source task list.
@@ -50,50 +49,69 @@ class Schedule:
             list, when the task list is empty, when the task list contains
             not a Task object.
         """
+        if tasks is None or executor_count is None:
+            raise ScheduleArgumentException(
+                'Error during initialization of the Schedule object! The tasks parameter is not a list')
+        if tasks == []:
+            raise ScheduleArgumentException(
+                'Error during initialization of the Schedule object! The task list is empty')
+        for i in range(len(tasks)):
+            if type(tasks[i]) is not Task:
+                raise ScheduleArgumentException(
+                    f'Error during initialization of the Schedule object! The task list contains not a Task object in the position {i}')
         error_msg = Schedule.__get_param_error(tasks)
         if error_msg is not None:
             raise ScheduleArgumentException(error_msg)
-        self.__tasks: list[Task] = tasks
+        self.__tasks: List[Task] = tasks
         self.__executor_count: int = executor_count
-        self.__executor_tasks: list[list[dict[str:Task, str: int]]] =\
+        self.__executor_tasks: List[List[dict[str:Task, str: int]]] = \
             [[] for i in range(executor_count)]
         self.__duration: int = self.__calculate_duration()
         self.__distribute_tasks()
 
     @property
-    def tasks(self) -> tuple[Task]:
-        """Returns the source task tuple."""
-        pass
+    def tasks(self) -> Tuple[Task]:
+        return tuple(self.__tasks)
 
     @property
     def task_count(self) -> int:
         """Returns the source task count."""
-        pass
+        return len(self.tasks)
 
     @property
     def executor_count(self) -> int:
         """Returns the executor count."""
-        pass
+        return self.__executor_count
 
     @property
     def duration(self) -> int:
         """Returns the schedule duration."""
-        pass
+        task_durations = [x.duration for x in self.tasks]
+        Tmax = max(task_durations)
+        Tavg = sum(task_durations) / self.executor_count
+        return max(Tmax, round(Tavg))
 
     @property
     def downtime(self) -> int:
         """Returns the downtime duration for all executors."""
-        pass
+        task_durations = [x.duration for x in self.tasks]
+        return self.duration * self.executor_count - sum(task_durations)
 
     def get_downtime_for_executor(self, executor_idx: int) -> int:
         """Returns the downtime duration for the executor.
-
         :param executor_idx: the index for executor.
         :raise InternalScheduleException: when the executor_idx parameter is
             not int, when the executor_idx parameter value is greater ot equal
             than the number of the executors.
         :return: the downtime duration for the executor.
         """
+        task_durations = [x.duration for x in self.tasks]
+        if (executor_idx + 1) * self.duration <= sum(task_durations):
+            return 0
+        elif (executor_idx + 1) * self.duration - sum(task_durations) < self.duration:
+            return (executor_idx + 1) * self.duration - sum(task_durations)
+        else:
+            return self.duration
         pass
 
     def get_schedule_for_executor(self, executor_idx: int) -> str:
@@ -105,6 +123,41 @@ class Schedule:
             than the number of the executors.
         :return: the schedule for the executor.
         """
+        # '1. task: h from 0 to 7\n'
+        sum = 0
+        str = ''
+        counter = 1
+        executors = []
+        for i in range(len(self.tasks)):
+            if self.tasks[i].duration + sum < self.duration:
+                str += f"{counter}. task: {self.tasks[i].name} from {sum} to {sum + self.tasks[i].duration}\n"
+                counter += 1
+                sum += self.tasks[i].duration
+            elif self.tasks[i].duration + sum == self.duration:
+                str += f"{counter}. task: {self.tasks[i].name} from {sum} to {sum + self.tasks[i].duration}\n"
+                counter = 1
+                sum = 0
+                executors.append(str[:-1:])
+                str = ''
+            else:
+                str += f"{counter}. task: {self.tasks[i].name} from {sum} to {self.duration}\n"
+                counter += 1
+                executors.append(str[:-1:])
+                str = ''
+                sum += self.tasks[i].duration
+                temp = sum - self.duration
+                counter = 1
+                str += f"{counter}. task: {self.tasks[i].name} from 0 to {temp}\n"
+                counter += 1
+                sum = temp
+
+        if sum < self.duration:
+            str += f"{counter}. task: downtime from {sum} to {self.duration}\n"
+        executors.append(str[:-1:])
+        for i in range(self.executor_count - len(executors)):
+            str = f"1. task: downtime from 0 to {self.duration}\n"
+            executors.append(str[:-1:])
+        return executors[executor_idx]
         pass
 
     def __calculate_duration(self) -> int:
@@ -114,7 +167,7 @@ class Schedule:
         pass
 
     @staticmethod
-    def __get_param_error(tasks: list[Task]) -> Union[str, None]:
+    def __get_param_error(tasks: List[Task]) -> Union[str, None]:
         pass
 
     def __get_executor_idx_error(self, executor_idx: int) -> Union[str, None]:
@@ -122,12 +175,11 @@ class Schedule:
 
 
 def main():
-    tasks = [Task('a', 3), Task('b', 4), Task('c', 6), Task('d', 7),
-             Task('e', 7), Task('f', 9), Task('g', 10), Task('h', 12),
-             Task('i', 17)]
-    schedule = Schedule(tasks, 5)
+    tasks = [Task('a', 1), Task('b', 1), Task('c', 1)]
+    schedule = Schedule(tasks, 3)
     print(f'Total duration: {schedule.duration}')
     print(f'Total downtime: {schedule.downtime}')
+    schedule.get_schedule_for_executor(0)
     for i in range(schedule.executor_count):
         print(f'\nExecutor # {i + 1}:')
         print(f'Downtime:  {schedule.get_downtime_for_executor(i)}')
