@@ -49,21 +49,11 @@ class Schedule:
             list, when the task list is empty, when the task list contains
             not a Task object.
         """
-        if tasks is None or executor_count is None:
-            raise ScheduleArgumentException(
-                'Error during initialization of the Schedule object! The tasks parameter is not a list')
-        if tasks == []:
-            raise ScheduleArgumentException(
-                'Error during initialization of the Schedule object! The task list is empty')
-        for i in range(len(tasks)):
-            if type(tasks[i]) is not Task:
-                raise ScheduleArgumentException(
-                    f'Error during initialization of the Schedule object! The task list contains not a Task object in the position {i}')
-        error_msg = Schedule.__get_param_error(tasks)
+        error_msg = Schedule.__get_param_error(self, tasks)
         if error_msg is not None:
             raise ScheduleArgumentException(error_msg)
-        self.__tasks: List[Task] = tasks
         self.__executor_count: int = executor_count
+        self.__tasks: List[Task] = tasks
         self.__executor_tasks: List[List[dict[str:Task, str: int]]] = \
             [[] for i in range(executor_count)]
         self.__duration: int = self.__calculate_duration()
@@ -71,6 +61,7 @@ class Schedule:
 
     @property
     def tasks(self) -> Tuple[Task]:
+        """Returns the source task tuple."""
         return tuple(self.__tasks)
 
     @property
@@ -86,16 +77,17 @@ class Schedule:
     @property
     def duration(self) -> int:
         """Returns the schedule duration."""
-        task_durations = [x.duration for x in self.tasks]
-        Tmax = max(task_durations)
-        Tavg = sum(task_durations) / self.executor_count
-        return max(Tmax, round(Tavg))
+        return self.__calculate_duration()
 
     @property
     def downtime(self) -> int:
         """Returns the downtime duration for all executors."""
-        task_durations = [x.duration for x in self.tasks]
-        return self.duration * self.executor_count - sum(task_durations)
+        return self.duration * self.executor_count - sum(self.task_durations)
+
+    @property
+    def task_durations(self) -> List[int]:
+        """Returns durations for all tasks."""
+        return [x.duration for x in self.tasks]
 
     def get_downtime_for_executor(self, executor_idx: int) -> int:
         """Returns the downtime duration for the executor.
@@ -105,14 +97,12 @@ class Schedule:
             than the number of the executors.
         :return: the downtime duration for the executor.
         """
-        task_durations = [x.duration for x in self.tasks]
-        if (executor_idx + 1) * self.duration <= sum(task_durations):
+        if (executor_idx + 1) * self.duration <= sum(self.task_durations):
             return 0
-        elif (executor_idx + 1) * self.duration - sum(task_durations) < self.duration:
-            return (executor_idx + 1) * self.duration - sum(task_durations)
+        elif (executor_idx + 1) * self.duration - sum(self.task_durations) < self.duration:
+            return (executor_idx + 1) * self.duration - sum(self.task_durations)
         else:
             return self.duration
-        pass
 
     def get_schedule_for_executor(self, executor_idx: int) -> str:
         """Returns the schedule for the executor.
@@ -123,7 +113,16 @@ class Schedule:
             than the number of the executors.
         :return: the schedule for the executor.
         """
-        # '1. task: h from 0 to 7\n'
+        if self.__get_executor_idx_error(executor_idx) is not None:
+            raise InternalScheduleException(self.__get_executor_idx_error(executor_idx))
+        return self.__distribute_tasks()[executor_idx]
+
+    def __calculate_duration(self) -> int:
+        Tmax = max(self.task_durations)
+        Tavg = sum(self.task_durations) / self.executor_count
+        return max(Tmax, round(Tavg))
+
+    def __distribute_tasks(self) -> List[str]:
         sum = 0
         str = ''
         counter = 1
@@ -157,26 +156,27 @@ class Schedule:
         for i in range(self.executor_count - len(executors)):
             str = f"1. task: downtime from 0 to {self.duration}\n"
             executors.append(str[:-1:])
-        return executors[executor_idx]
-        pass
+        return executors
 
-    def __calculate_duration(self) -> int:
-        pass
-
-    def __distribute_tasks(self) -> None:
-        pass
-
-    @staticmethod
-    def __get_param_error(tasks: List[Task]) -> Union[str, None]:
-        pass
+    def __get_param_error(self, tasks: List[Task]) -> Union[str, None]:
+        if tasks is None:
+            return 'Error during initialization of the Schedule object! The tasks parameter is not a list'
+        if tasks == []:
+            return 'Error during initialization of the Schedule object! The task list is empty'
+        for i in range(len(tasks)):
+            if type(tasks[i]) is not Task:
+                return f'Error during initialization of the Schedule object! The task list contains not a Task object in the position {i}'
 
     def __get_executor_idx_error(self, executor_idx: int) -> Union[str, None]:
-        pass
+        if type(executor_idx) is not int:
+            return 'The executor_idx parameter is not int'
+        if executor_idx >= self.executor_count:
+            return 'The executor_idx parameter value is greater ot equal than the number of the executors'
 
 
 def main():
     tasks = [Task('a', 1), Task('b', 1), Task('c', 1)]
-    schedule = Schedule(tasks, 3)
+    schedule = Schedule(tasks, 5)
     print(f'Total duration: {schedule.duration}')
     print(f'Total downtime: {schedule.downtime}')
     schedule.get_schedule_for_executor(0)
