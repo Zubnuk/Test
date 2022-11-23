@@ -1,7 +1,8 @@
 import unittest
 
 
-from main import Schedule, ScheduleArgumentException
+from main import Schedule, ScheduleArgumentException, \
+    InternalScheduleException, TASK, PART
 from task import Task
 
 
@@ -25,6 +26,66 @@ class TestSchedule(unittest.TestCase):
                                'object! The task list contains not a Task '
                                'object in the position 2',
                                Schedule.__init__, None, tasks, 1)
+
+    def test_get_schedule_for_executor_none(self):
+        sched = Schedule([Task('a', 1)], 1)
+        with self.assertRaisesRegex(InternalScheduleException,
+                                    'Schedule error! The executor_idx '
+                                    'parameter is not int.'):
+            sched.get_schedule_for_executor(None)
+
+    def test_get_schedule_for_executor_not_int(self):
+        sched = Schedule([Task('a', 1)], 1)
+        with self.assertRaisesRegex(InternalScheduleException,
+                                    'Schedule error! The executor_idx '
+                                    'parameter is not int.'):
+            sched.get_schedule_for_executor(1.1)
+
+    def test_get_schedule_for_executor_out_of_range(self):
+        sched = Schedule([Task('a', 1)], 1)
+        with self.assertRaisesRegex(InternalScheduleException,
+                                    'Schedule error! The executor_idx '
+                                    'parameter is out of range.'):
+            sched.get_schedule_for_executor(2)
+
+    def test_get_downtime_for_executor_none(self):
+        sched = Schedule([Task('a', 1)], 1)
+        with self.assertRaisesRegex(InternalScheduleException,
+                                    'Schedule error! The executor_idx '
+                                    'parameter is not int.'):
+            sched.get_downtime_for_executor(None)
+
+    def test_get_downtime_for_executor_not_int(self):
+        sched = Schedule([Task('a', 1)], 1)
+        with self.assertRaisesRegex(InternalScheduleException,
+                                    'Schedule error! The executor_idx '
+                                    'parameter is not int.'):
+            sched.get_downtime_for_executor(1.1)
+
+    def test_get_downtime_for_executor_out_of_range(self):
+        sched = Schedule([Task('a', 1)], 1)
+        with self.assertRaisesRegex(InternalScheduleException,
+                                    'Schedule error! The executor_idx '
+                                    'parameter is out of range.'):
+            sched.get_downtime_for_executor(2)
+
+    def test_private_single__executor_tasks(self):
+        task_a = Task('a', 2)
+        task_b = Task('b', 1)
+        sched = Schedule([task_a, task_b], 1)
+        executor_schedules = sched._Schedule__executor_tasks
+        executor1_schedule = [{TASK: task_a, PART: 2}, {TASK: task_b, PART: 1}]
+        self.assertEqual(executor1_schedule, executor_schedules[0])
+
+    def test_private_double__executor_tasks(self):
+        task_a = Task('a', 2)
+        task_b = Task('b', 1)
+        sched = Schedule([task_a, task_b], 2)
+        executor_schedules = sched._Schedule__executor_tasks
+        executor1_schedule = [{TASK: task_a, PART: 2}]
+        executor2_schedule = [{TASK: task_b, PART: 1}]
+        self.assertEqual(executor1_schedule, executor_schedules[0])
+        self.assertEqual(executor2_schedule, executor_schedules[1])
 
     def test_single_task_single_executor(self):
         task_a = Task('a', 1)
