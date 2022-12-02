@@ -1,11 +1,8 @@
 from typing import Union
-import math
 
+from custom_exception import InternalScheduleException, ScheduleArgumentException
 
 from task import Task
-from custom_exception import ScheduleArgumentException,\
-    InternalScheduleException
-
 
 TASK = 'task'
 PART = 'part'
@@ -63,27 +60,31 @@ class Schedule:
     @property
     def tasks(self) -> tuple[Task]:
         """Returns the source task tuple."""
-        pass
+        return tuple(self.__tasks)
 
     @property
     def task_count(self) -> int:
         """Returns the source task count."""
-        pass
+        return len(self.__tasks)
 
     @property
     def executor_count(self) -> int:
         """Returns the executor count."""
-        pass
+        return self.__executor_count
 
     @property
     def duration(self) -> int:
         """Returns the schedule duration."""
-        pass
+        return self.__duration
 
     @property
     def downtime(self) -> int:
         """Returns the downtime duration for all executors."""
-        pass
+        downtime_sum = 0
+        for executor in self.__executor_tasks:
+            # downtime_sum += self.duration - sum(map(lambda d: list(d.values())[0], executor))
+            downtime_sum += self.duration - sum(map(lambda d: d[PART], executor))
+        return downtime_sum
 
     def get_downtime_for_executor(self, executor_idx: int) -> int:
         """Returns the downtime duration for the executor.
@@ -94,7 +95,9 @@ class Schedule:
             than the number of the executors.
         :return: the downtime duration for the executor.
         """
-        pass
+        self.__get_executor_idx_error(executor_idx)
+        # return self.duration - sum(map(lambda d: list(d.values())[0], self.__executor_tasks[executor_idx]))
+        return self.duration - sum(map(lambda d: d[PART], self.__executor_tasks[executor_idx]))
 
     def get_schedule_for_executor(self, executor_idx: int) -> str:
         """Returns the schedule for the executor.
@@ -105,20 +108,69 @@ class Schedule:
             than the number of the executors.
         :return: the schedule for the executor.
         """
-        pass
+        self.__get_executor_idx_error(executor_idx)
+        answer = ""
+        hours = 0
+        if len(self.__executor_tasks[executor_idx]) == 0:
+            answer += f"1. task: downtime from 0 to {self.duration}"
+        for task in range(len(self.__executor_tasks[executor_idx])):
+            item = self.__executor_tasks[executor_idx][task]
+            key, value = item[TASK], item[PART]
+            if task == len(self.__executor_tasks[executor_idx]) - 1:
+                if hours + value != self.duration:
+                    answer += f"{task + 1}. task: {key.name} from {hours} to {hours + value}\n"
+                    answer += f"{task + 2}. task: downtime from {hours+value} to {self.duration}"
+                else:
+                    answer += f"{task + 1}. task: {key.name} from {hours} to {hours + value}"
+            else:
+                answer += f"{task + 1}. task: {key.name} from {hours} to {hours + value}\n"
+            hours += value
+        return answer
 
     def __calculate_duration(self) -> int:
-        pass
+        t_max = max(map(lambda t: t.duration, self.tasks))
+        t_avg = sum(map(lambda Task: Task.duration, self.tasks))//self.executor_count
+        t_opt = max(t_max, t_avg)
+        return t_opt
 
     def __distribute_tasks(self) -> None:
-        pass
+        distr_tasks = list(map(lambda Task: [Task.name, Task.duration], self.tasks))
+        for executor in range(self.executor_count):
+            if distr_tasks[-1][1] == 0:
+                break
+            for task in range(self.task_count):
+                if distr_tasks[task][1] == 0:
+                    continue
+                downtime = self.duration - sum(map(lambda d: d[PART], self.__executor_tasks[executor]))
+                current_task_dur = distr_tasks[task][1]
+                if downtime > 0:
+                    if downtime - current_task_dur >= 0:
+                        self.__executor_tasks[executor].append({TASK: self.tasks[task], PART: distr_tasks[task][1]})
+                        distr_tasks[task][1] = 0
+                    else:
+                        self.__executor_tasks[executor].append({TASK: self.tasks[task], PART: downtime})
+                        distr_tasks[task][1] = current_task_dur - downtime
+                else:
+                    break
 
     @staticmethod
     def __get_param_error(tasks: list[Task]) -> Union[str, None]:
-        pass
+        if type(tasks) is not list:
+            raise ScheduleArgumentException('Error during initialization of the Schedule object! The tasks parameter is not a list')
+        elif len(tasks) == 0:
+            raise ScheduleArgumentException('Error during initialization of the Schedule object! The task list is empty')
+        else:
+            for task in range(len(tasks)):
+                if type(tasks[task]) is not Task:
+                    raise ScheduleArgumentException(f'Error during initialization of the Schedule object! The task list contains not a Task object in the position {task}')
 
     def __get_executor_idx_error(self, executor_idx: int) -> Union[str, None]:
-        pass
+        if executor_idx is None:
+            raise InternalScheduleException('Schedule error! The executor_idx parameter is not int.')
+        elif type(executor_idx) is not int:
+            raise InternalScheduleException('Schedule error! The executor_idx parameter is not int.')
+        elif executor_idx > self.executor_count:
+            raise InternalScheduleException('Schedule error! The executor_idx parameter is out of range.')
 
 
 def main():
