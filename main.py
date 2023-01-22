@@ -2,29 +2,33 @@ TASK = 'task'
 PART = 'part'
 DOWNTIME = 'downtime'
 
-def task_checker(task_list: list) -> bool:
+
+def task_checker(task_list: list):
     if task_list is None:
         raise ValueError('Error during initialization of the Schedule object! The tasks parameter is not a list')
     elif len(task_list) == 0:
         raise ValueError('Error during initialization of the Schedule object! The task list is empty')
     for i in range(len(task_list)):
         if type(task_list[i]) is not list:
-            raise ValueError(f'Error during initialization of the Schedule object! The task list contains not a list object in the position {i}')
+            raise ValueError(f'Error during initialization of the Schedule object! '
+                             f'The task list contains not a list object in the position {i}')
         if type(task_list[i][0]) != str:
-            raise  ValueError('The task name is not a string')
+            raise ValueError('The task name is not a string')
         if len(task_list[i][0]) < 1:
-            raise  ValueError('The task name is empty')
+            raise ValueError('The task name is empty')
         if type(task_list[i][1]) != int:
-            raise  ValueError('The duration parameter is not an integer')
+            raise ValueError('The duration parameter is not an integer')
         if task_list[i][1] < 1:
-            raise  ValueError('The duration parameter value is less than 1')
+            raise ValueError('The duration parameter value is less than 1')
+
 
 def duration(task_list: list, executor_count: int) -> int:
-    m = list(map(lambda t: t[1], task_list))
-    t_max = max(m)
-    t_avg = sum(m)//executor_count
+    all_dur = list(map(lambda t: t[1], task_list))
+    t_max = max(all_dur)
+    t_avg = sum(all_dur)//executor_count
     t_opt = max(t_max, t_avg)
     return t_opt
+
 
 def downtime(executor_tasks: list, duration: int) -> int:
     downtime_sum = 0
@@ -33,8 +37,10 @@ def downtime(executor_tasks: list, duration: int) -> int:
         downtime_sum += duration - sum(map(lambda d: d[PART], executor))
     return downtime_sum
 
+
 def downtime_for_executor(executor_idx: int, executor_tasks: list, duration: int) -> int:
-        return duration - sum(map(lambda d: d[PART], executor_tasks[executor_idx]))
+    return duration - sum(map(lambda d: d[PART], executor_tasks[executor_idx]))
+
 
 def distribute_tasks(task_list: list, executor_count: int, duration: int):
     distr_tasks = list(map(lambda t: [t[0], t[1]], task_list))
@@ -45,18 +51,19 @@ def distribute_tasks(task_list: list, executor_count: int, duration: int):
         for task in range(len(task_list)):
             if distr_tasks[task][1] == 0:
                 continue
-            downtime = duration - sum(map(lambda d: d[PART], executor_tasks[executor]))
+            dt = duration - sum(map(lambda d: d[PART], executor_tasks[executor]))
             current_task_dur = distr_tasks[task][1]
-            if downtime > 0:
-                if downtime - current_task_dur >= 0:
+            if dt > 0:
+                if dt - current_task_dur >= 0:
                     executor_tasks[executor].append({TASK: task_list[task], PART: distr_tasks[task][1]})
                     distr_tasks[task][1] = 0
                 else:
-                    executor_tasks[executor].append({TASK: task_list[task], PART: downtime})
-                    distr_tasks[task][1] = current_task_dur - downtime
+                    executor_tasks[executor].append({TASK: task_list[task], PART: dt})
+                    distr_tasks[task][1] = current_task_dur - dt
             else:
                 break
     return executor_tasks
+
 
 def schedule_for_executor(executor_idx: int, executor_tasks: list, duration: int) -> str:
     answer = ""
@@ -80,7 +87,7 @@ def schedule_for_executor(executor_idx: int, executor_tasks: list, duration: int
 
 def create_schedule(task_list: list, executor_count: int):
     task_checker(task_list)
-    if executor_count is None or type(executor_count) is not int :
+    if executor_count is None or type(executor_count) is not int:
         raise ValueError('Invalid type of executors amount')
     elif executor_count < 1:
         raise ValueError('Invalid executors amount number')
@@ -93,7 +100,7 @@ def create_schedule(task_list: list, executor_count: int):
         'tasks amount': len(task_list),
         'duration': dur,
         'downtime': dtime,
-        'executor_tasks': executor_tasks
+        'executor_tasks': executor_tasks,
     }
     for i in range(executor_count):
         d_time = downtime_for_executor(i, executor_tasks, dur)
@@ -101,6 +108,7 @@ def create_schedule(task_list: list, executor_count: int):
         # schedule[i+1] = f'Executor #{i+1}:\nDowntime: {d_time}\n{schedule_for_executor(i, executor_tasks, dur)}'
         schedule[i+1] = f'{schedule_for_executor(i, executor_tasks, dur)}'
     return schedule
+
 
 def main():
     tasks = [['a', 3], ['b', 4], ['c', 6], ['d', 7],
@@ -113,6 +121,7 @@ def main():
 
     for i in range(sch['executors']):
         print(sch[i+1])
+
 
 if __name__ == '__main__':
     main()
