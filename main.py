@@ -76,7 +76,7 @@ class Schedule:
     @property
     def duration(self) -> int:
         """Returns the schedule duration."""
-        return self.__calculate_duration()
+        return self.__duration
 
     @property
     def downtime(self) -> int:
