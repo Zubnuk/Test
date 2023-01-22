@@ -105,7 +105,6 @@ def create_schedule(task_list: list, executor_count: int):
     for i in range(executor_count):
         d_time = downtime_for_executor(i, executor_tasks, dur)
         schedule[f'downtime executor {i+1}'] = d_time
-        # schedule[i+1] = f'Executor #{i+1}:\nDowntime: {d_time}\n{schedule_for_executor(i, executor_tasks, dur)}'
         schedule[i+1] = f'{schedule_for_executor(i, executor_tasks, dur)}'
     return schedule
 
