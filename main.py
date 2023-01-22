@@ -56,7 +56,7 @@ class Schedule:
         self.__executor_tasks: list[list[dict[str:Task, str: int]]] = \
             [[] for i in range(executor_count)]
         self.__duration: int = self.__calculate_duration()
-        self.__distribute_tasks()
+        self.__distributed_tasks = self.__distribute_tasks()
 
     @property
     def tasks(self) -> Tuple[Task]:
@@ -76,9 +76,7 @@ class Schedule:
     @property
     def duration(self) -> int:
         """Returns the schedule duration."""
-        t_max = max(task.duration for task in self.tasks)
-        t_avg = sum(task.duration for task in self.tasks) / self.executor_count
-        return max(t_max, t_avg)
+        return self.__calculate_duration()
 
     @property
     def downtime(self) -> int:
@@ -118,15 +116,17 @@ class Schedule:
         self.__get_executor_idx_error(executor_idx)
         itog = ''
         counter = 0
-        for info in self.__distribute_tasks()[executor_idx]:
-            if counter > 0 and counter - 1 < len(self.__distribute_tasks()[executor_idx]):
+        for info in self.__distributed_tasks[executor_idx]:
+            if counter > 0 and counter - 1 < len(self.__distributed_tasks[executor_idx]):
                 itog += '\n'
             itog += info
             counter += 1
         return itog
 
     def __calculate_duration(self) -> int:
-        return self.duration
+        t_max = max(task.duration for task in self.tasks)
+        t_avg = sum(task.duration for task in self.tasks) / self.executor_count
+        return max(t_max, t_avg)
 
     def __get_private_executor_tasks(self) -> None:
         task_idx = 0
@@ -182,7 +182,7 @@ class Schedule:
             executions.append(tasks_info)
         for i in range(self.executor_count - len(executions)):
             executions.append([f'1. task: downtime from 0 to {self.duration}'])
-        self.__get_private_executor_tasks()
+        # self.__get_private_executor_tasks()
         return executions
 
     @staticmethod
