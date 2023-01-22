@@ -50,6 +50,7 @@ class Schedule:
             [[] for i in range(executor_count)]
         self.__duration: int = self.__calculate_duration()
         self.__distribute_tasks()
+        self.__executors = self.__distribute_tasks()
 
     @property
     def tasks(self) -> Tuple[Task]:
@@ -69,7 +70,7 @@ class Schedule:
     @property
     def duration(self) -> int:
         """Returns the schedule duration."""
-        return self.__calculate_duration()
+        return self.__duration
 
     @property
     def downtime(self) -> int:
@@ -106,7 +107,7 @@ class Schedule:
         """
         if self.__get_executor_idx_error(executor_idx) is not None:
             raise InternalScheduleException(self.__get_executor_idx_error(executor_idx))
-        return self.__distribute_tasks()[executor_idx]
+        return self.__executors[executor_idx]
 
     def __calculate_duration(self) -> int:
         Tmax = max(self.task_durations)
@@ -140,7 +141,6 @@ class Schedule:
                 str += f"{counter}. task: {self.tasks[i].name} from 0 to {temp}\n"
                 counter += 1
                 sum = temp
-
         if sum < self.duration:
             str += f"{counter}. task: downtime from {sum} to {self.duration}\n"
         executors.append(str[:-1:])
