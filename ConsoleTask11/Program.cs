@@ -1,5 +1,5 @@
-﻿using Algorithm11;
-using Task = Algorithm11.Task;
+﻿using ConsoleTask11;
+using Task = ConsoleTask11.Task;
 
 Task task1 = new Task("a", 3);
 Task task2 = new Task("b", 4);
@@ -21,4 +21,3 @@ List<Task> tasks = new List<Task>()
 Schedule schedule = new Schedule(tasks, 5);
 schedule.BeautyPrint();
 Console.ReadLine();
-

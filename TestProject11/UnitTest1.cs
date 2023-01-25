@@ -1,7 +1,7 @@
-using Algorithm11;
-using Task = Algorithm11.Task;
+using ConsoleTask11;
+using Task = ConsoleTask11.Task;
 
-namespace ProjectTests
+namespace TestProject11
 {
     [TestClass]
     public class UnitTest1
@@ -9,7 +9,6 @@ namespace ProjectTests
         [TestMethod]
         public void AllTasksInTape()
         {
-            // Arrange
             List<Task> tasks = new List<Task>
             {
                 new Task("Task 1", 2),
@@ -20,7 +19,6 @@ namespace ProjectTests
             int executorCount = 2;
             Schedule schedule = new Schedule(tasks, executorCount);
 
-            // Act
             var taskTapes = schedule.DistributeTasks();
 
             // Assert
@@ -35,7 +33,6 @@ namespace ProjectTests
         [TestMethod]
         public void ReturnsExpectedTaskTapes()
         {
-            // Arrange
             List<Task> tasks = new List<Task>
             {
                 new Task("Task 1", 2),
@@ -52,7 +49,6 @@ namespace ProjectTests
 
             var taskTapes = schedule.DistributeTasks();
 
-            //Assert
             var allTasks = tasks.Select(x => x.Name);
             var tasksInTapes = taskTapes.SelectMany(x => x.Select(y => y.Name));
             Assert.AreEqual(Topt, schedule.GetDuration());
@@ -62,12 +58,10 @@ namespace ProjectTests
         [TestMethod]
         public void NullTasksThrowsArgumentException()
         {
-            //Arrange
             List<Task> tasks = null;
             List<Task> tasks1 = new List<Task>();
             int executorCount = 2;
 
-            //Assert
             Assert.ThrowsException<ArgumentException>(() => new Schedule(tasks, executorCount));
             Assert.ThrowsException<ArgumentException>(() => new Schedule(tasks1, executorCount));
         }
@@ -75,7 +69,6 @@ namespace ProjectTests
         [TestMethod]
         public void ZeroExecutorCountThrowsArgumentException()
         {
-            // Arrange
             List<Task> tasks = new List<Task>
             {
                 new Task("Task 1", 2),
@@ -85,7 +78,6 @@ namespace ProjectTests
             };
             int executorCount = 0;
 
-            //Assert
             Assert.ThrowsException<ArgumentException>(() => new Schedule(tasks, executorCount));
         }
     }

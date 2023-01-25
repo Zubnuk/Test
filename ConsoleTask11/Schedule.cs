@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Algorithm11
+namespace ConsoleTask11
 {
     public class Schedule
     {
@@ -16,7 +19,7 @@ namespace Algorithm11
 
         public int TaskCount()
         {
-            if(_tasks == null)
+            if (_tasks == null)
             {
                 return 0;
             }
@@ -61,7 +64,7 @@ namespace Algorithm11
                 Console.WriteLine(index);
                 foreach (Task task in tape)
                 {
-                    Console.WriteLine("Task: " + task.Name + " from "+ task.StartDuration + " to " + task.EndDuration);
+                    Console.WriteLine("Task: " + task.Name + " from " + task.StartDuration + " to " + task.EndDuration);
                 }
             }
         }

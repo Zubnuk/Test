@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Algorithm11\Algorithm11.csproj" />
+    <ProjectReference Include="..\ConsoleTask11\ConsoleTask11.csproj" />
   </ItemGroup>
 
 </Project>

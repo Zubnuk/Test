@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Algorithm11
+namespace ConsoleTask11
 {
     public class Task
     {
