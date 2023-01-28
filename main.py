@@ -1,8 +1,8 @@
 from typing import Union
 
-
 from task import Task
 from custom_exception import ScheduleArgumentException
+
 
 class ScheduleRow:
     """A class for a schedule row.
@@ -20,6 +20,7 @@ class ScheduleRow:
     end(self) -> float:
         Returns an end point for the period.
     """
+
     def __init__(self, start: float, duration: float,
                  task_name: Union[str, None] = None,
                  is_downtime: bool = False):
@@ -123,6 +124,7 @@ class Schedule:
         Returns a schedule for the second stage containing time points for
         the start and end of tasks and downtime periods.
     """
+
     def __init__(self, tasks: list[Task]):
         """Schedule class constructor to initialize the object.
 
@@ -165,11 +167,27 @@ class Schedule:
         the start and end of tasks and downtime periods."""
         return tuple(self.__stages_schedule[1])
 
-    def __sort_tasks(self, tasks: list[Task]) -> list[Task]:
-        pass
+    @staticmethod
+    def __sort_tasks(tasks: list[Task]) -> list[Task]:
+        part1 = list(filter((lambda length: length.stage1 <= length.stage2), tasks))
+        part2 = list(filter((lambda length: length.stage1 > length.stage2), tasks))
+        part1 = sorted(part1, key=lambda length: length.stage1)
+        part2 = sorted(part2, key=lambda length: length.stage2, reverse=True)
+        return part1 + part2
 
     def __fill_schedule(self):
-        pass
+        time1, time2 = 0, 0
+        for work in self.__tasks:
+            self.__stages_schedule[0].append(ScheduleRow(time1, work.stage1, work.name))
+            time1 += work.stage1
+            if time2 < time1:
+                self.__stages_schedule[1].append(ScheduleRow(time2, time1 - time2, None, True))
+                self.__stages_schedule[1].append(ScheduleRow(time1, work.stage2, work.name))
+                time2 = time1 + work.stage2
+            else:
+                self.__stages_schedule[1].append(ScheduleRow(time2, work.stage2, work.name))
+                time2 += work.stage2
+        self.__stages_schedule[0].append(ScheduleRow(time1, time2 - time1, None, True))
 
     @staticmethod
     def __get_param_error(tasks: list[Task]) -> Union[str, None]:
