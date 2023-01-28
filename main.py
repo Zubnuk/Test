@@ -165,11 +165,42 @@ class Schedule:
         the start and end of tasks and downtime periods."""
         return tuple(self.__stages_schedule[1])
 
-    def __sort_tasks(self, tasks: list[Task]) -> list[Task]:
-        pass
+    @staticmethod
+    def __sort_tasks(tasks: list[Task]) -> list[Task]:
+        group1 = []
+        group2 = []
+        for task in tasks:
+            if task.stage1 <= task.stage2:
+                group1.append(task)
+            else:
+                group2.append(task)
+        group1 = sorted(group1, key=lambda x: x.stage1)
+        group2 = sorted(group2, key=lambda x: x.stage2, reverse=True)
+        return group1 + group2
 
     def __fill_schedule(self):
-        pass
+        stage1_start = 0
+        stage2_start = 0
+        for task in self.__tasks:
+            stage1_end = stage1_start + task.stage1
+            if stage1_end > stage2_start:
+                downtime_duration = stage1_end - stage2_start
+                self.__stages_schedule[1].append(
+                    ScheduleRow(start=stage2_start, duration=downtime_duration, is_downtime=True)
+                )
+                stage2_start = stage1_end
+            stage2_end = stage2_start + task.stage2
+
+            self.__stages_schedule[0].append(ScheduleRow(start=stage1_start, duration=task.stage1, task_name=task.name))
+            self.__stages_schedule[1].append(ScheduleRow(start=stage2_start, duration=task.stage2, task_name=task.name))
+
+            if stage1_end < stage2_end and task == self.__tasks[-1]:
+                downtime_duration = stage2_end - stage1_end
+                self.__stages_schedule[0].append(
+                    ScheduleRow(start=stage1_end, duration=downtime_duration, is_downtime=True))
+
+            stage1_start = stage1_end
+            stage2_start = stage2_end
 
     @staticmethod
     def __get_param_error(tasks: list[Task]) -> Union[str, None]:
