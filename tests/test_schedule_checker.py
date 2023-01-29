@@ -1,10 +1,9 @@
 import unittest
 
+from schedule_checker import ScheduleChecker
 
-from schedule import Schedule
 
-
-class TestSchedule(unittest.TestCase):
+class TestScheduleChecker(unittest.TestCase):
     def test_something(self):
         pass
 

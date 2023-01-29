@@ -1,10 +1,10 @@
 import unittest
 
 
-from schedule import Schedule
+from schedule_graph import ScheduleGraph
 
 
-class TestSchedule(unittest.TestCase):
+class TestScheduleGraph(unittest.TestCase):
     def test_something(self):
         pass
 
