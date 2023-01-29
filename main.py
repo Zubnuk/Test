@@ -1,3 +1,4 @@
+import pprint
 from typing import Union
 
 
@@ -166,10 +167,32 @@ class Schedule:
         return tuple(self.__stages_schedule[1])
 
     def __sort_tasks(self, tasks: list[Task]) -> list[Task]:
-        pass
+        first = []
+        second = []
+        for task in tasks:
+            if task.stage1 <= task.stage2:
+                first.append(task)
+            else:
+                second.append(task)
+        first = sorted(first, key=lambda task: task.stage1)
+        second = sorted(second, key=lambda task: task.stage2, reverse=True)
+        return first + second
+
 
     def __fill_schedule(self):
-        pass
+        first_executor = 0
+        second_executor = 0
+        for task in self.__tasks:
+            self.__stages_schedule[0].append(ScheduleRow(first_executor, task.stage1, task.name))
+            first_executor += task.stage1
+            if second_executor >= first_executor:
+                self.__stages_schedule[1].append(ScheduleRow(second_executor, task.stage2, task.name))
+                second_executor += task.stage2
+            else:
+                self.__stages_schedule[1].append(ScheduleRow(second_executor, first_executor - second_executor, None, True))
+                self.__stages_schedule[1].append(ScheduleRow(first_executor, task.stage2, task.name))
+                second_executor = first_executor + task.stage2
+        self.__stages_schedule[0].append(ScheduleRow(first_executor, second_executor - first_executor, None, True))
 
     @staticmethod
     def __get_param_error(tasks: list[Task]) -> Union[str, None]:
