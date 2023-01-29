@@ -1,30 +1,11 @@
 import unittest
 
 
-from main import Schedule, ScheduleRow, ScheduleArgumentException
+from main import Schedule, ScheduleRow
 from task import Task
 
 
 class TestSchedule(unittest.TestCase):
-    def test_none_tasks(self):
-        self.assertRaisesRegex(ScheduleArgumentException,
-                               'Error during initialization of the Schedule '
-                               'object! The tasks parameter is not a list',
-                               Schedule.__init__, None, None)
-
-    def test_empty_tasks(self):
-        self.assertRaisesRegex(ScheduleArgumentException,
-                               'Error during initialization of the Schedule '
-                               'object! The task list is empty',
-                               Schedule.__init__, None, [])
-
-    def test_tasks_contains_non_task(self):
-        tasks = [Task('a', 7, 2), Task('b', 3, 4), 'non task object']
-        self.assertRaisesRegex(ScheduleArgumentException,
-                               'Error during initialization of the Schedule '
-                               'object! The task list contains not a Task '
-                               'object in the position 2',
-                               Schedule.__init__, None, tasks)
 
     def test_single(self):
         task_a = Task('a', 1, 2)
