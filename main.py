@@ -1,8 +1,8 @@
 from typing import Union
 
-
 from task import Task
 from custom_exception import ScheduleArgumentException
+
 
 class ScheduleRow:
     """A class for a schedule row.
@@ -20,6 +20,7 @@ class ScheduleRow:
     end(self) -> float:
         Returns an end point for the period.
     """
+
     def __init__(self, start: float, duration: float,
                  task_name: Union[str, None] = None,
                  is_downtime: bool = False):
@@ -123,6 +124,7 @@ class Schedule:
         Returns a schedule for the second stage containing time points for
         the start and end of tasks and downtime periods.
     """
+
     def __init__(self, tasks: list[Task]):
         """Schedule class constructor to initialize the object.
 
@@ -165,11 +167,56 @@ class Schedule:
         the start and end of tasks and downtime periods."""
         return tuple(self.__stages_schedule[1])
 
-    def __sort_tasks(self, tasks: list[Task]) -> list[Task]:
-        pass
+    def __append_task_to_stage1_schedule(self, row: ScheduleRow):
+        """Appends new task to schedule for the first stage"""
+        self.__stages_schedule[0].append(row)
+
+    def __append_task_to_stage2_schedule(self, row: ScheduleRow):
+        """Appends new task to schedule for the second stage"""
+        self.__stages_schedule[1].append(row)
+
+    @staticmethod
+    def __sort_tasks(tasks: list[Task]) -> list[Task]:
+        # duration of first stage is less or equal than duration of second stage
+        firstStageIsLessOrEqualThanSecondStageGroup = []
+
+        # others: second stage > first stage
+        firstStageIsGreaterThanSecondStageGroup = []
+
+        for task in tasks:
+            if task.stage1 <= task.stage2:
+                firstStageIsLessOrEqualThanSecondStageGroup.append(task)
+            else:
+                firstStageIsGreaterThanSecondStageGroup.append(task)
+
+        # first group sorted by A (duration of first stage) ASC
+        firstGroupSortedByA = sorted(firstStageIsLessOrEqualThanSecondStageGroup, key=lambda t: t.stage1)
+
+        # second group sorted by B (duration of second stage) DESC
+        secondGroupSortedByB = sorted(firstStageIsGreaterThanSecondStageGroup, key=lambda t: t.stage2, reverse=True)
+
+        return firstGroupSortedByA + secondGroupSortedByB
 
     def __fill_schedule(self):
-        pass
+        duration1, duration2 = 0, 0
+
+        for task in self.__tasks:
+            # assign first stage of task to first worker (stage1 in schedule)
+            self.__append_task_to_stage1_schedule(ScheduleRow(duration1, task.stage1, task.name))
+            duration1 += task.stage1
+            if duration2 < duration1:
+                # downtime for second worker (stage2 in schedule) if duration2 < duration1
+                self.__append_task_to_stage2_schedule(ScheduleRow(duration2, duration1 - duration2, None, True))
+                # assign second stage of task to second worker (stage2 in schedule)
+                self.__append_task_to_stage2_schedule(ScheduleRow(duration1, task.stage2, task.name))
+                duration2 = duration1 + task.stage2
+            else:
+                # assign second stage of task to second worker (stage2 in schedule) without downtime
+                self.__append_task_to_stage2_schedule(ScheduleRow(duration2, task.stage2, task.name))
+                duration2 += task.stage2
+
+        # final downtime
+        self.__append_task_to_stage1_schedule(ScheduleRow(duration1, duration2 - duration1, None, True))
 
     @staticmethod
     def __get_param_error(tasks: list[Task]) -> Union[str, None]:
