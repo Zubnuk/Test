@@ -1,5 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import scipy
 
 from schedule_graph import ScheduleGraph
 from schedule_checker import ScheduleChecker

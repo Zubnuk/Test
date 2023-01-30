@@ -16,3 +16,9 @@ class ScheduleGraph:
     @staticmethod
     def show_plot(graph: nx.Graph) -> None:
         pass
+
+def __usage_example():
+    pass
+
+if __name__ == '__main__':
+    __usage_example()

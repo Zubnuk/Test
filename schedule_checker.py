@@ -13,3 +13,9 @@ class ScheduleChecker:
     @staticmethod
     def get_schedule_errors(schedule: list[list[str]]) -> list[str]:
         pass
+
+def __usage_example():
+    pass
+
+if __name__ == '__main__':
+    __usage_example()

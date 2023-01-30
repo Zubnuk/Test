@@ -17,3 +17,9 @@ class Schedule:
 
     def __fill_schedule(self) -> None:
         pass
+
+def __usage_example():
+    pass
+
+if __name__ == '__main__':
+    __usage_example()
