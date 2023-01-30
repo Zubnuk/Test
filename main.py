@@ -19,6 +19,7 @@ class ScheduleRow:
         Returns the duration of the row period.
     end(self) -> float:
         Returns an end point for the period.
+        
     """
 
     def __init__(self, start: float, duration: float,
