@@ -66,3 +66,8 @@ class Task:
             if value < 1:
                 return f'The {name} parameter value is less than 1'
         return None
+    def __eq__(self, other):
+        return (self._name == other._name and self._stage1 == other._stage1 and self._stage2 == other._stage2)
+
+    def __hash__(self):
+        return hash((self._name, self._stage1, self._stage2))

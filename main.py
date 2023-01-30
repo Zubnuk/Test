@@ -166,10 +166,33 @@ class Schedule:
         return tuple(self.__stages_schedule[1])
 
     def __sort_tasks(self, tasks: list[Task]) -> list[Task]:
-        pass
+        group1 = [x for x in tasks if x.stage1<=x.stage2]
+        group2 = [x for x in tasks if x.stage1>x.stage2]
+
+        group1.sort(key=lambda x: x.stage1)
+        group2.sort(key=lambda x: x.stage2, reverse=True)
+
+        return group1+group2
 
     def __fill_schedule(self):
-        pass
+        for task in self.tasks:
+            previous_stage1_end_time = self.stage1_schedule[-1].end if len(self.stage1_schedule) > 0 else 0
+            previous_stage2_end_time = self.stage2_schedule[-1].end if len(self.stage2_schedule) > 0 else 0
+
+            self.__stages_schedule[0].append(ScheduleRow(previous_stage1_end_time, task.stage1, task.name))
+
+            if (self.__stages_schedule[0][-1].end > previous_stage2_end_time):
+                downtime_duration = self.__stages_schedule[0][-1].end - previous_stage2_end_time
+                self.__stages_schedule[1].append(
+                    ScheduleRow(previous_stage2_end_time, downtime_duration, is_downtime=True))
+                self.__stages_schedule[1].append(ScheduleRow(self.stage2_schedule[-1].end, task.stage2, task.name))
+            else:
+                self.__stages_schedule[1].append(ScheduleRow(previous_stage2_end_time, task.stage2, task.name))
+
+        if (self.stage1_schedule[-1].end < self.stage2_schedule[-1].end):
+            previous_stage1_end_time = self.stage1_schedule[-1].end
+            downtime_duration = self.__stages_schedule[1][-1].end - previous_stage1_end_time
+            self.__stages_schedule[0].append(ScheduleRow(previous_stage1_end_time, downtime_duration, is_downtime=True))
 
     @staticmethod
     def __get_param_error(tasks: list[Task]) -> Union[str, None]:
