@@ -14,12 +14,10 @@ class ScheduleChecker:
                 if graph.degree[neighbor] != 1:
                     return False
         return True
-        pass
 
     @staticmethod
     def get_tree_count(graph: nx.Graph) -> int:
         return nx.number_weakly_connected_components(graph)
-        pass
 
     @staticmethod
     def get_schedule_errors(schedule: list[list[str]]) -> list[str]:
