@@ -1,8 +1,8 @@
 from typing import Union
 
-
 from task import Task
 from custom_exception import ScheduleArgumentException
+
 
 class ScheduleRow:
     """A class for a schedule row.
@@ -20,6 +20,7 @@ class ScheduleRow:
     end(self) -> float:
         Returns an end point for the period.
     """
+
     def __init__(self, start: float, duration: float,
                  task_name: Union[str, None] = None,
                  is_downtime: bool = False):
@@ -123,6 +124,7 @@ class Schedule:
         Returns a schedule for the second stage containing time points for
         the start and end of tasks and downtime periods.
     """
+
     def __init__(self, tasks: list[Task]):
         """Schedule class constructor to initialize the object.
 
@@ -166,10 +168,43 @@ class Schedule:
         return tuple(self.__stages_schedule[1])
 
     def __sort_tasks(self, tasks: list[Task]) -> list[Task]:
-        pass
+        first_group = []
+        second_group = []
+        for task in tasks:
+            # We divide into 2 groups in the first where the first stage is
+            # shorter or equal to the second
+            if (task.stage1 <= task.stage2):
+                first_group.append(task)
+            else:
+                second_group.append(task)
+        # Sort in ascending stage1
+        first_group = sorted(first_group, key=lambda task: task.stage1)
+        # do in descending order of the second stage
+        second_group = sorted(second_group, key=lambda task: task.stage2)
+        second_group.reverse()
+        return first_group + second_group
 
     def __fill_schedule(self):
-        pass
+        first_bar = 0
+        second_bar = 0
+        for task in self.__tasks:
+            # Fill in the first bar
+            self.__stages_schedule[0].append(ScheduleRow(first_bar, task.stage1, task.name))
+            first_bar += task.stage1
+            # The second cannot start before the first.
+            if (second_bar < first_bar):
+                # Calculates downtime
+                self.__stages_schedule[1].append(ScheduleRow(second_bar, first_bar - second_bar, None, True))
+                second_bar = first_bar
+                # fill in the second bar
+                self.__stages_schedule[1].append(ScheduleRow(second_bar, task.stage2, task.name))
+                second_bar += task.stage2
+            else:
+                # fill in the second bar
+                self.__stages_schedule[1].append(ScheduleRow(second_bar, task.stage2, task.name))
+                second_bar += task.stage2
+            # Equalize both bar with help downtime
+        self.__stages_schedule[0].append(ScheduleRow(first_bar, second_bar - first_bar, None, True))
 
     @staticmethod
     def __get_param_error(tasks: list[Task]) -> Union[str, None]:
