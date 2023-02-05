@@ -13,6 +13,8 @@ class TestCase(unittest.TestCase):
                      ['6\nABCOAX', 'ABCOAX'],
                      ['6\nABABABABAB', 'AB'],
                      ['21\nASZYAFAXZEWWAVQHJHBPELYZP', 'AFAXZEWWAVQHJHBPE'],
+                     ['28\nAAPQJZAPTAKAAZFJROGIMRNBJZAK',
+                      'AAPQJZAPTAKAAZFJROGIMRNBJZAK'],
                      ['28\nEAUBIYTDBVLMGPDBQFBOLJRVXVVUUSEI',
                       'AUBIYTDBVLMGPDBQFBOLJRVXVVU']]
         for input_str, win_str in test_data:
@@ -55,6 +57,8 @@ class TestCase(unittest.TestCase):
                 return False
         for i in range(length):
             if win_seq > sequence[i:length]:
+                print(f'length = {length}')
+                print(f'source sequence [{sequence[0:length]}]')
                 print(f'[{sequence[i:length]}] is less than [{win_seq}]')
                 return False
         return True
