@@ -30,11 +30,11 @@ class TestScheduleGraph(unittest.TestCase):
         self.assertRaisesRegex(ArgumentException, 'Tree count must be not more than vertex count',
                                ScheduleGraph.generate_random_forest, 3, 2)
 
-    def test_type_tree_count(self):
+    def test_type_tree_count_not_int(self):
         self.assertRaisesRegex(ArgumentException, 'Tree count and vertex count must be an integer more than zero',
                                ScheduleGraph.generate_random_forest, 1.1, 2)
 
-    def test_type_vertex_count(self):
+    def test_type_vertex_count_not_int(self):
         self.assertRaisesRegex(ArgumentException, 'Tree count and vertex count must be an integer more than zero',
                                ScheduleGraph.generate_random_forest, 1, 2.2)
 
