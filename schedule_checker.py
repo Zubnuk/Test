@@ -37,10 +37,9 @@ class ScheduleChecker:
                         f"Violation of dependency: Task '{node}' should start before '{edge}'")
 
         return errors
-        pass
 
 def __usage_example():
-    pass
+    graph = nx.DiGraph()
 
 if __name__ == '__main__':
     __usage_example()
