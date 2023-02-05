@@ -11,6 +11,7 @@ class TestCase(unittest.TestCase):
                      ['4\nALLOALLO', 'ALLO'],
                      ['5\nBBABBABB', 'ABB'],
                      ['6\nABCOAX', 'ABCOAX'],
+                     ['6\nABABABABAB', 'AB'],
                      ['21\nASZYAFAXZEWWAVQHJHBPELYZP', 'AFAXZEWWAVQHJHBPE'],
                      ['28\nEAUBIYTDBVLMGPDBQFBOLJRVXVVUUSEI',
                       'AUBIYTDBVLMGPDBQFBOLJRVXVVU']]
