@@ -18,7 +18,7 @@ class ScheduleChecker:
 
     @staticmethod
     def get_tree_count(graph: nx.Graph) -> int:
-        return graph.number_of_nodes()
+        return nx.number_weakly_connected_components(graph)
         pass
 
     @staticmethod
