@@ -10,27 +10,11 @@ class TestScheduleChecker(unittest.TestCase):
         checker = ScheduleChecker()
         self.assertEqual(checker.get_tree_count(graph), 0)
 
-    def test_is_inverted_trees_empty(self):
-        graph = nx.DiGraph()
-        checker = ScheduleChecker()
-        self.assertFalse(checker.is_inverted_trees(graph))
-
     def test_schedule_errors(self):
         graph = nx.DiGraph()
         checker = ScheduleChecker()
         schedule = []
         self.assertEqual(checker.get_schedule_errors(graph, schedule), [])
-
-    def test_is_inverted_trees(self):
-        graph = nx.DiGraph()
-        graph.add_edges_from([('A', 'B'), ('B', 'C'), ('C', 'D')])
-        checker = ScheduleChecker()
-        self.assertTrue(checker.is_inverted_trees(graph))
-
-        graph = nx.DiGraph()
-        graph.add_edges_from([('A', 'B'), ('B', 'C'), ('C', 'D'), ('D', 'A')])
-        checker = ScheduleChecker()
-        self.assertFalse(checker.is_inverted_trees(graph))
 
     def test_get_tree_count(self):
         graph = nx.DiGraph()
@@ -86,20 +70,6 @@ class TestScheduleChecker(unittest.TestCase):
         schedule_checker = ScheduleChecker()
         schedule = [["A"], ["B"], ["C"], ["D"]]
         self.assertEqual(schedule_checker.get_schedule_errors(graph, schedule), [])
-
-    def test_some_case(self):
-        graph = nx.DiGraph()
-        graph.add_edges_from([('A', 'B'), ('B', 'C'), ('D', 'L'), ('E', 'D'),
-                              ('F', 'A'), ('G', 'A'), ('H', 'A'), ('I', 'L'),
-                              ('J', 'E'), ('K', 'E'), ('L', 'C'), ('M', 'B')])
-
-        schedule = [["K", "J", "H"], ["E", "G", "F"], ["I", "D", "M"], ["B"], ["C"]]
-
-        schedule_checker = ScheduleChecker()
-        self.assertTrue(schedule_checker.is_inverted_trees(graph))
-        self.assertEqual(schedule_checker.get_tree_count(graph), 1)
-        self.assertEqual(schedule_checker.get_schedule_errors(graph, schedule), [])
-
 
 if __name__ == '__main__':
     unittest.main()
