@@ -23,7 +23,7 @@ class ScheduleChecker:
     def get_schedule_errors(schedule: list[list[str]]) -> list[str]:
         errors = []
         task_start_times = {}
-        for node, edges in graph.items(): 
+        for node, edges in schedule.items(): 
             for edge in edges:  
                 if node not in task_start_times or edge not in task_start_times: 
 
