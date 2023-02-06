@@ -20,7 +20,7 @@ class ScheduleChecker:
         return nx.number_weakly_connected_components(graph)
 
     @staticmethod
-    def get_schedule_errors(schedule: list[list[str]]) -> list[str]:
+    def get_schedule_errors(graph: nx.Graph,schedule: list[list[str]]) -> list[str]:
         errors = []
         task_start_times = {}
         for time, tasks in enumerate(schedule):
