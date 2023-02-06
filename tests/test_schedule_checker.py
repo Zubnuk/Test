@@ -1,11 +1,27 @@
 import unittest
+import networkx as nx
 
 from schedule_checker import ScheduleChecker
 
 
 class TestScheduleChecker(unittest.TestCase):
-    
-     def test_is_inverted_trees(self):
+    def test_get_tree_count_empty(self):
+        graph = nx.DiGraph()
+        checker = ScheduleChecker()
+        self.assertEqual(checker.get_tree_count(graph), 0)
+
+    def test_is_inverted_trees_empty(self):
+        graph = nx.DiGraph()
+        checker = ScheduleChecker()
+        self.assertFalse(checker.is_inverted_trees(graph))
+
+    def test_schedule_errors(self):
+        graph = nx.DiGraph()
+        checker = ScheduleChecker()
+        schedule = []
+        self.assertEqual(checker.get_schedule_errors(graph, schedule), [])
+
+    def test_is_inverted_trees(self):
         graph = nx.DiGraph()
         graph.add_edges_from([('A', 'B'), ('B', 'C'), ('C', 'D')])
         checker = ScheduleChecker()
@@ -63,29 +79,13 @@ class TestScheduleChecker(unittest.TestCase):
         schedule = [["A"], ["B"], ["B"], ["C"], ["D"]]
         self.assertEqual(schedule_checker.get_schedule_errors(graph, schedule),
                          ["Task 'B' starts at time 2 but already started at time 1"])
-        
-    def test_get_tree_count_empty(self):
-        graph = nx.DiGraph()
-        checker = ScheduleChecker()
-        self.assertEqual(checker.get_tree_count(graph), 0)
-        
+
     def test_valid_schedule(self):
         graph = nx.DiGraph()
         graph.add_edges_from([('A', 'B'), ('B', 'C'), ('C', 'D')])
         schedule_checker = ScheduleChecker()
         schedule = [["A"], ["B"], ["C"], ["D"]]
         self.assertEqual(schedule_checker.get_schedule_errors(graph, schedule), [])
-        
-     def test_is_inverted_trees_empty(self):
-        graph = nx.DiGraph()
-        checker = ScheduleChecker()
-        self.assertFalse(checker.is_inverted_trees(graph))
-
-    def test_schedule_errors(self):
-        graph = nx.DiGraph()
-        checker = ScheduleChecker()
-        schedule = []
-        self.assertEqual(checker.get_schedule_errors(graph, schedule), [])
 
     def test_some_case(self):
         graph = nx.DiGraph()
