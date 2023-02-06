@@ -23,16 +23,15 @@ class ScheduleChecker:
     def get_schedule_errors(schedule: list[list[str]]) -> list[str]:
         errors = []
         task_start_times = {}
-        for node, edges in schedule.items(): 
-            for edge in edges:  
-                if node not in task_start_times or edge not in task_start_times: 
-
-                    errors.append(f"Task '{node}' or '{edge}' not found in schedule")  
-
-                elif task_start_times[node] >= task_start_times[edge]:  
-
+        for time, tasks in enumerate(schedule):
+            for task in tasks:
+                if task not in graph:
+                    errors.append(f"Task '{task}' in schedule not found in graph")
+                if task in task_start_times:
                     errors.append(
-                        f"Violation of dependency: Task '{node}' should start before '{edge}'")
+                        f"Task '{task}' starts at time {time} but already started at time {task_start_times[task]}")
+                else:
+                    task_start_times[task] = time
 
         return errors
 
