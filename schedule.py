@@ -36,6 +36,8 @@ class Schedule:
                     mon[i].append(1)
                 else:
                     mon[i].append(0)
+            if sum(mon[i]) == 0:
+                mon[i][0] = 2
             mon.append([])
         mon.pop(-1)
         return mon
@@ -52,10 +54,9 @@ class Schedule:
         levels.pop(-1)
         levels.reverse()
         level = []
-        count = len(levels[0])
         for i in levels:
             level += i
-        return level, count
+        return level
 
     def __Schedule_Distribution(self, level, arr):
         while len(level) != 0:
@@ -89,10 +90,7 @@ class Schedule:
                 indexs.append(-1)
                 levels[0].append(i)
         mon = self.__input_matrix(matr, indexs)
-        level, count = self.__Prioritization(levels, mon)
-
-        for i in range(count):
-            mon[level[i]][0] = 2
+        level = self.__Prioritization(levels, mon)
         self.__Schedule_Distribution(level, mon)
 
     def __CheckElement(self, index, arr) -> bool:
