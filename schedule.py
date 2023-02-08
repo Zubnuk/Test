@@ -1,10 +1,11 @@
 import networkx as nx
-
+import scipy
 
 class Schedule:
     def __init__(self, graph: nx.Graph, executor_count: int):
         self.__graph = graph
         self.__executor_count = executor_count
+        self.__error()
         self.__matrix = (nx.adjacency_matrix(graph)).toarray()
         self.__schedule = [[] for _ in range(executor_count)]
         self.__fill_schedule()
@@ -16,13 +17,12 @@ class Schedule:
         return self.__schedule[executor_idx]
 
     def __error(self):
-
         if self.__graph is None:
-            raise ValueError("Graph None")
+            raise ValueError("Error during initialization of the Schedule object! The graph parameter is not a graph'")
         if self.__executor_count is None:
             raise ValueError("executor_count None")
         if self.__executor_count < 1:
-            raise ValueError("executor_count must be >0")
+            raise ValueError("Invalid executors amount number")
         if type(self.__graph) is not nx.DiGraph:
             raise ValueError("Graph not DiGraph")
         if len(self.__graph.nodes) < 1:
@@ -52,9 +52,10 @@ class Schedule:
         levels.pop(-1)
         levels.reverse()
         level = []
+        count = len(levels[0])
         for i in levels:
             level += i
-        return level
+        return level, count
 
     def __Schedule_Distribution(self, level, arr):
         while len(level) != 0:
@@ -78,7 +79,6 @@ class Schedule:
                     self.__schedule[i].append('-')
 
     def __fill_schedule(self) -> None:
-        self.__error()
         levels = [[]]
         indexs = []
         matr = self.__matrix.tolist()
@@ -89,13 +89,16 @@ class Schedule:
                 indexs.append(-1)
                 levels[0].append(i)
         mon = self.__input_matrix(matr, indexs)
-        level = self.__Prioritization(levels, mon)
+        level, count = self.__Prioritization(levels, mon)
+
+        for i in range(count):
+            mon[level[i]][0] = 2
         self.__Schedule_Distribution(level, mon)
 
     def __CheckElement(self, index, arr) -> bool:
         count = 0
         for i in arr[index]:
-            if i == 1 and sum(arr[count]) != 0:
+            if i == 1 and (sum(arr[count]) != 0 or arr[count][0] == 2):
                 return False
             count += 1
         return True
@@ -103,23 +106,14 @@ class Schedule:
 
 def __usage_example():
     graph = nx.DiGraph()
-    graph.add_nodes_from([('a', {'color': 'red'}), ('b', {'color': 'red'}),
-                          ('c', {'color': 'red'}), ('d', {'color': 'red'}),
-                          ('e', {'color': 'green'}), ('f', {'color': 'green'}),
-                          ('g', {'color': 'green'}), ('h', {'color': 'green'}),
-                          ('i', {'color': 'green'}), ('j', {'color': 'green'}),
-                          ('k', {'color': 'green'}), ('l', {'color': 'green'}),
-                          ('m', {'color': 'green'})])
-    graph.add_edges_from([('a', 'b'), ('b', 'c'), ('d', 'l'),
-                          ('e', 'd'), ('f', 'a'), ('g', 'a'), ('h', 'a'), ('i', 'l'),
-                          ('j', 'e'), ('k', 'e'), ('l', 'c'), ('m', 'b')])
+    graph.add_nodes_from([('a', {'color': 'red'}), ('b', {'color': 'red'}), ('c', {'color': 'red'}), ('d', {'color': 'red'})])
+    graph.add_edges_from([('a', 'b'), ('b', 'c'), ('d', 'c')])
     executor_count = 3
     schedule = Schedule(graph, executor_count)
     print(f'Schedule for {executor_count} executers:')
     for i in range(executor_count):
-        print(i + 1, schedule.get_schedule_for_executor(i))
+        print(i+1, schedule.get_schedule_for_executor(i))
 
 
 if __name__ == '__main__':
     __usage_example()
-
