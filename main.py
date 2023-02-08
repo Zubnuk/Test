@@ -6,7 +6,15 @@ def get_win_sequence(input_string: str) -> str:
     Latin letters.
     :return: a subsequence from the source sequence.
     """
-    pass
+    count = int(input_string.split()[0])
+    word = input_string.split()[1][:count]
+    best_word = word
+    for i in range(1, count):
+        new_word = word[i:]
+        # Слова сравниваются по численому значению букв поэтомы чем раньше буква тем меньше ее число
+        if new_word < best_word:
+            best_word = new_word
+    return best_word
 
 
 def get_water_volume(input_string: str) -> int:
@@ -17,7 +25,16 @@ def get_water_volume(input_string: str) -> int:
     numbers — the height of the columns.
     :return: the number of blocks filled with water
     """
-    pass
+    arr_water = input_string.split()
+    arr_border = [[], []]
+    for i in range(1, int(arr_water[0]) + 1):
+        arr_border[0].append(max(0 if i == 1 else arr_border[0][-1], int(arr_water[i])))
+        arr_border[1].append(max(0 if i == 1 else arr_border[1][-1], int(arr_water[len(arr_water) - i])))
+    arr_border[1].reverse()
+    sum = 0
+    for i in range(int(arr_water[0])):
+        sum += min(arr_border[0][i], arr_border[1][i]) - int(arr_water[i + 1])
+    return sum
 
 
 def main():
