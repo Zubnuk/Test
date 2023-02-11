@@ -62,15 +62,12 @@ class Schedule:
         while len(level) != 0:
             count = 0
             index_row = []
-            maxCount = len(level)
             for i in level:
-                maxCount -= 1
                 if self.__CheckElement(i, arr):
                     count += 1
                     self.__schedule[count - 1].append(list(self.__graph.nodes)[i])
                     index_row.append(i)
-                    maxCount -= 1
-                if count == self.__executor_count or len(level) == 0 or maxCount == 0:
+                if count == self.__executor_count or len(level) == 0:
                     break
             for i in range(count):
                 arr[index_row[i]] = [0 for i in range(len(arr[0]))]
@@ -105,7 +102,7 @@ class Schedule:
 def __usage_example():
     graph = nx.DiGraph()
     graph.add_nodes_from([('a', {'color': 'red'}), ('b', {'color': 'red'}), ('c', {'color': 'red'}), ('d', {'color': 'red'})])
-    graph.add_edges_from([('a', 'b'), ('b', 'c'), ('d', 'c')])
+    graph.add_edges_from([('a', 'b'), ('b', 'c')])
     executor_count = 3
     schedule = Schedule(graph, executor_count)
     print(f'Schedule for {executor_count} executers:')
