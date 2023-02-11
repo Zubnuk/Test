@@ -11,7 +11,7 @@ def get_win_sequence(input_string: str) -> str:
     best_word = word
     for i in range(1, count):
         new_word = word[i:]
-        # Слова сравниваются по численому значению букв поэтомы чем раньше буква тем меньше ее число
+        # Слова сравниваются по номеру букв поэтомы чем раньше буква тем меньше ее число
         if new_word < best_word:
             best_word = new_word
     return best_word
