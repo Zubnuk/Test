@@ -6,7 +6,14 @@ def get_win_sequence(input_string: str) -> str:
     Latin letters.
     :return: a subsequence from the source sequence.
     """
-    pass
+    params = input_string.split()
+    count = int(params[0])
+    letters = [params[1][:count]]
+
+    for i in range(len(letters[0]) - 1):
+        letters.append(letters[i][1:])
+
+    return sorted(letters)[0]
 
 
 def get_water_volume(input_string: str) -> int:
@@ -17,7 +24,42 @@ def get_water_volume(input_string: str) -> int:
     numbers — the height of the columns.
     :return: the number of blocks filled with water
     """
-    pass
+    params = input_string.split()
+    count = int(params[0])
+    params.pop(0)
+    columns = [int(x) for x in params]
+
+    left_col_max_idx = 0  # левый край
+    right_col_max_idx = count - 1  # правый край
+
+    lowlands = []  # низменности
+
+    # одновременный проход массива с левого и правого концов
+    for i in range(0, count):
+        curr_left_col_idx = i
+        curr_left_col = columns[curr_left_col_idx]
+
+        curr_right_col_idx = count - i - 1
+        curr_right_col = columns[curr_right_col_idx]
+
+        if curr_left_col >= columns[left_col_max_idx]:
+            if curr_left_col_idx - left_col_max_idx > 1:  # края низменностей
+                lowlands.append((left_col_max_idx, curr_left_col_idx))
+            left_col_max_idx = curr_left_col_idx
+
+        if curr_right_col >= columns[right_col_max_idx]:
+            if right_col_max_idx - curr_right_col_idx > 1:  # края низменностей
+                lowlands.append((curr_right_col_idx, right_col_max_idx))
+            right_col_max_idx = curr_right_col_idx
+
+    lowlands = list(set(lowlands))  # убираем дубли
+    water_volume = 0
+    for left, right in lowlands:
+        waterline = min(columns[left], columns[right])
+        for i in range(left + 1, right):
+            water_volume += waterline - columns[i]
+
+    return water_volume
 
 
 def main():
