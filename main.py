@@ -6,7 +6,26 @@ def get_win_sequence(input_string: str) -> str:
     Latin letters.
     :return: a subsequence from the source sequence.
     """
-    pass
+    n = int(input_string.split('\n')[0])
+    str = input_string.split('\n')[1][:n]
+    res = ''
+    alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    for l in range(len(alphabet)):
+        if len(str) > 0 and str.__contains__(alphabet[l]):
+            a_indexes = []
+            for i in range(len(str)):
+                if str[i] == alphabet[l]:
+                    a_indexes.append(i)
+            if a_indexes[-1] == len(str) - 1:
+                return alphabet[l]
+            strings_start_letter = []
+            for index in a_indexes:
+                strings_start_letter.append(str[index:])
+            res = min(strings_start_letter)
+            if len(res) == len(str):
+                return res
+            else:
+                return res
 
 
 def get_water_volume(input_string: str) -> int:
@@ -17,7 +36,25 @@ def get_water_volume(input_string: str) -> int:
     numbers — the height of the columns.
     :return: the number of blocks filled with water
     """
-    pass
+    n, blocks_str = input_string.split("\n")
+    blocks = list(map(int, blocks_str.split()))
+    right = []
+    left = []
+    cur_max = blocks[0]
+    for block_h in blocks:
+        if block_h > cur_max:
+            cur_max = block_h
+        right.append(cur_max)
+    cur_max = blocks[-1]
+    for block_h in reversed(blocks):
+        if block_h > cur_max:
+            cur_max = block_h
+        left.append(cur_max)
+    left.reverse()
+    ans = 0
+    for i in range(len(blocks)):
+        ans += min(right[i], left[i]) - blocks[i]
+    return ans
 
 
 def main():
@@ -25,7 +62,7 @@ def main():
 
     print(get_win_sequence('4\nMAMA'))  # A
     print(get_win_sequence('4\nALLOALLO'))  # ALLO
-    print(get_win_sequence('6\nABCOAXLO'))  # ABCOAX
+    print(get_win_sequence('8\nABCOAXLO'))  # ABCOAX
 
 
 if __name__ == '__main__':
