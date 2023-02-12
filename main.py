@@ -6,7 +6,11 @@ def get_win_sequence(input_string: str) -> str:
     Latin letters.
     :return: a subsequence from the source sequence.
     """
-    pass
+    length, sequence = input_string.split("\n")
+    data = [sequence[:int(length)]]
+    for i in range(len(data[0]) - 1):
+        data.append(data[i][1:])
+    return min(data)
 
 
 def get_water_volume(input_string: str) -> int:
@@ -17,7 +21,26 @@ def get_water_volume(input_string: str) -> int:
     numbers — the height of the columns.
     :return: the number of blocks filled with water
     """
-    pass
+    data = input_string.strip().split("\n")
+    n = int(data[0])
+    column_heights = list(map(int, data[1].split()))
+
+    trapped_water = 0
+    left_max = [0] * n
+    right_max = [0] * n
+
+    left_max[0] = column_heights[0]
+    for i in range(1, n):
+        left_max[i] = max(left_max[i - 1], column_heights[i])
+
+    right_max[n - 1] = column_heights[n - 1]
+    for i in range(n - 2, -1, -1):
+        right_max[i] = max(right_max[i + 1], column_heights[i])
+
+    for i in range(n):
+        trapped_water += min(left_max[i], right_max[i]) - column_heights[i]
+
+    return trapped_water
 
 
 def main():
