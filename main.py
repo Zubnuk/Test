@@ -45,6 +45,7 @@ def get_water_volume(input_string: str) -> int:
     for j in range(count - 2, 0, -1):
         temp_max = max(temp_max, int(letters[j + 1]))
         right_border.append(temp_max)
+    right_border.reverse()
     water = 0
     for x in range(count-2):
         if min(left_border[x], right_border[x])-int(letters[x+1]) > 0:
